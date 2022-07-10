@@ -32,3 +32,8 @@ access Network : physical media, communications links
 
 
 ## Application Layer
+
+### Socket
+OS 수준에서 제공하는 API, Application program, OS 에 transport layer가 구현되어있음(TCP, UDP만), tcp socket과 udp소켓은 아예다른 소켓이다.  
+tcp => data stream, udp -. data gram
+
