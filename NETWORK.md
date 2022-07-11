@@ -52,13 +52,15 @@ message error, message loss
 #### RDT의 중요요소
 * packet error
 * packet loss
-신뢰적인 데이터 전송을 하기 위해서는 패킷의 에러, 패킷 유실 두 가지를 해결해야한다. 패킷 에러는 패킷 전송 중에 일어날 수 있는 데이터 변이를 뜻하고, 패킷 유실은 패킷 전송 중 패킷이 목적지까지 제대로 도착을 못하는 것을 의미한다. 패킷 유실의 대표적으로 라우터의 큐가 가득차 패킷이 버리는 것이다.
+신뢰적인 데이터 전송을 하기 위해서는 패킷의 에러, 패킷 유실 두 가지를 해결해야한다. 패킷 에러는 패킷 전송 중에 일어날 수 있는 데이터 변이를 뜻하고, 패킷 유실은 패킷 전송 중 패킷이 목적지까지 제대로 도착을 못하는 것을 의미한다. 패킷 유실의 대표적으로 라우터의 큐가 가득차 라우터에서 패킷을 버리는 것이다.
 
 #### RDT 1.0 (reliable transfer over a perfect channel)
-RDT 1.0은 채널이 완전하게 안정적이라고 생각한다. 즉 신뢰적 전송의 중요 요소 에러와 유실이 발생하지 않는다고 보는 것이다. 에러와 유실이 발생하지 않으면 무조건적으로 데이터가 송신측에서 수신측으로 올바르게 전송된다는 것을 의미하므로 패킷 송신자와 수신자는 패킷의 에러와 유실을 걱정할 필요가 없다. **현실적으로 이런 상황은 매우 비현실적이다.**
+RDT 1.0은 채널이 완전하게 안정적이라고 생각한다. 즉 신뢰적 전송의 중요 요소 에러와 유실이 발생하지 않는다고 보는 것이다. 에러와 유실이 발생하지 않으면 무조건적으로 데이터가 송신측에서 수신측으로 올바르게 전송된다는 것을 의미하므로 패킷 송신자와 수신자는 패킷의 에러와 유실을 걱정할 필요가 없다. **현실적으로 이런 상황은 매우 비현실적이다.**  
+![image](https://user-images.githubusercontent.com/56042451/178205493-529ce115-8c8f-4db1-b75c-b668d3e15bd5.png)
 
-### RDT 2.0 (channel with packet error)
-RDT 2.0은 패킷에 유실은 일어나지 않지만 **에러**가 발생 할 수 있다는 가정을 한다. 에러를 발생 유무를 확인하기 위해서는 일단 패킷에 **Error detection**을 체크하는 항목과 에러를 확인하고 다시 재전송 해줄것을 요청하는 feedback(Acknowledgements(acks), negative acknowledgements(naks)) 마지막으로 재전송하는 메카니즘이 필요하다.
+
+#### RDT 2.0 (channel with packet error)
+RDT 2.0은 패킷에 유실은 일어나지 않지만 **에러**가 발생 할 수 있다는 가정을 한다. 에러를 발생 유무를 확인하기 위해서는 일단 패킷에 **Error detection**을 체크하는 항목과 에러를 확인하고 다시 재전송 해줄것을 요청하는 feedback(Acknowledgements(acks), negative acknowledgements(naks)) 마지막으로 재전송하는 메카니즘이 필요하다.  
 
 * Error detection 방법
   + 패킷 내부에 에러를 탐지할 수 있는 요소를 삽입하고 Transfer Layer에서 확인한다. 대표적으로 Checksum bit
@@ -66,24 +68,35 @@ RDT 2.0은 패킷에 유실은 일어나지 않지만 **에러**가 발생 할 �
   + ACKs : 수신측이 송신측에 패킷을 제대로 받았다고 응답한다.
     - 송신측에서 ACKs가 담긴 패킷을 받으면 연결을 종료한다.
   + NAKs : 수신측이 송신측에 패킷에 오류가 있다고 응답한다.
-    - 송신측에서 NAKs가 담긴 패킷을 받으면 해당 패킷을 재전송한다.
+    - 송신측에서 NAKs가 담긴 패킷을 받으면 해당 패킷을 재전송한다.  
+![image](https://user-images.githubusercontent.com/56042451/178205889-cdc702e4-3bea-4be4-8bd8-5e400523685b.png)
+
 
 <font color="green"> **RDT 2.0의 결함**</font>  
-ACKs와 NAKs도 패킷에 담겨저 보내지기 때문에 패킷 오류 또는 손실이 발생할 수 있다. 오류 또는 손실이 발생할 경우 송신측에서는 NAK신호라고 가정하여 다시 데이터를 보내는데 이 데이터가 재전송된 데이터인지 새로운 데이터인지 수신측에서는 확인이 불가능하다.
+ACKs와 NAKs도 패킷에 담겨저 보내지기 때문에 패킷 오류가 발생할 수 있다(패킷 유실은 RDT 2.0에서 고려하지 않음). 패킷 오류가 일어날 시 sender에서는 NAK 신호로 인식하고 패킷을 재전송하게 된다. 이런 현상의 첫번째 문제는 응답 패킷이 계속적으로 오류가 난다면 sender에서는 무한히 동일 패킷을 보낼 것이고 이는 네트워크에 큰 부하를 가하게된다. 두번째 문제는 sender에서는 오류로 인해 동일 패킷을 전송했지만 receiver에서는 이게 오류로 인한 패킷 재전송인지 새로운 패킷인지 구분하지 못한다.(duplicate packets problem)
 
-### RDT 2.1(handles garbled ack/naks)
-RDT 2.0의 결함을 제거하기 위해 고안된 방법. 패킷마다 sequence 번호를 붙여서 송수신을 한다. 
-* 가정
-  + packet error가 발생가능성이 있음
-  + loss는 일어나지 않음
-보내는 packet에 체크섬 비트를 추가한다.(부가적인 정보 추가), receiver 측에서 패킷 수신 여부를 전송한다.(feedback) -> ack 또는 nak, 송신자는 nak일 때 패킷을 재전송한다.  
-피드백, 즉 수신 여부 패킷에 에러가 있다면? 일단 checksum 이 있어야함.  
-handling duplicate packets 
+#### RDT 2.1(handles garbled ack/naks)
+RDT 2.0의 duplicate packets 결함을 제거하기 위해 고안된 방법. 패킷마다 sequence 번호를 붙여서 송수신을 한다. 이때 시퀀스번호는 transport layer의 header에 담기게 되는데 header의 크기가 커지면 이 또한 전송에 오버헤드이므로 최소화 해야한다. 시퀀스 번호는 두 개(0,1)로만 변경되는 것을 표현하면 되므로 1 bit면 충분하다.
 
-### RDT 2.1
-### RDT 2.2
+* 동작
+  + 1. sender가 처음 보내는 패킷에 sequence #0으로 receiver에게 전송
+  + 2. receiver는 패킷에 오류가 없다면 sequence #0번 패킷이 잘 전송되었다는 ACK 시그널이 담긴 패킷을 sender에게 전송
+    - 2-1. receiver는 패킷에 오류가 있다면 sequence #0번 패킷이 오류가 있다는 NAK 시그널이 담긴 패킷을 sender에게 전송
+  + 3. sender는 두 번째 패킷에 sequence #1으로 receiver에게 전송
+    - 3-1. NAK 시그널이 담긴 패킷을 받으면 다시 해당 sequence 번호로 재전송
+    - 3-2. 오류가 있는 시그널 패킷도 NAk로 인식하고 receiver에게 해당 번호로 재전송
+  + 4. receiver는 sequence 번호만 변경된채로 2, 2-1 반복
+
+![image](https://user-images.githubusercontent.com/56042451/178208497-268d3d79-1432-453f-8234-f6059091cf07.png)
+
+
+#### RDT 2.2
+RDT 2.2는 NAK를 사용하지 않고 ACK만 사용한다. 사용가능한 이유는 sequence 번호가 있기 때문에 sequence + ack조합으로 사용한다면 nak는 사용하지 않을 수 있다.
+
+
 ### RDT 3.0
-timer 
+RDT 1.0 부터 RDT 2.2까지는 packet error에 관해서만 다뤘다. RDT 3.0에서는 에러 뿐만 아니라 packer loss를 추가하여 완벽한 신뢰적인 데이터 전송을 완성한다.  
+RDT 3.0에서 패킷 유실을 해결하기위해 Timer를 도입했다. 합리적인(resonable)시간 안에 ACK 메세지가 오지않는다면 유실이라 간주하고 패킷을 재전송하는 것이다.
 
 ### RDT 3.
 ## Application Layer
