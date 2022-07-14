@@ -34,6 +34,17 @@ access Network : physical media, communications links
 OS 수준에서 제공하는 API, Application program, OS 에 transport layer가 구현되어있음(TCP, UDP만), tcp socket과 udp소켓은 아예다른 소켓이다.  
 tcp => data stream, udp -. data gram
 
+## Application Layer
+
+### HTTP (Hypertext Transper Protocol)
+
+#### URL Structure
+![image](https://user-images.githubusercontent.com/56042451/178882344-40ced9b7-03be-4c68-a98e-4cb27d55459b.png)
+1. Protocol : 통신 규격, 웹상에서는 http 프로토콜을 이용한다.
+2. host address: 도메인 네임 혹은 ip주소가 들어간다.  
+3. port : 통신할 프로세스의 주소이다. 웹서버는 기본으로 80포트를 사용하기 때문에 생각해도 상관없다.
+4. path : 사용자가 찾고자하는 파일의 서버 내 경로이다
+5. query : key=value 형태로 path 뒤 ?를 기점으로 사용자가 요청하고자하는 데이터를 요청한다.
 
 ## Transport layer
 상위레이어 application layer에 서비스를 제공.
@@ -98,5 +109,9 @@ RDT 2.2는 NAK를 사용하지 않고 ACK만 사용한다. 사용가능한 이�
 RDT 1.0 부터 RDT 2.2까지는 packet error에 관해서만 다뤘다. RDT 3.0에서는 에러 뿐만 아니라 packer loss를 추가하여 완벽한 신뢰적인 데이터 전송을 완성한다.  
 RDT 3.0에서 패킷 유실을 해결하기위해 Timer를 도입했다. 합리적인(resonable)시간 안에 ACK 메세지가 오지않는다면 유실이라 간주하고 패킷을 재전송하는 것이다.
 
-### RDT 3.
+### Selective Repeat (선택적 반복, SR)
+GBN의 주요 문제점은 패킷이 하나만 유실돼도 윈도우안에 있는 응답받지않은 모든 패킷을 불필요하게 전송하는 것이다. 이는 네트워크 지연을 증가시키는 요인이다. 이를 해결시키기 위해 SR에서는 개별적인 확인응답하는 방법을 추가하였다. 모든 송신자의 윈도우내 패킷은 GBN과 달리 개별적으로 타이머가 존재한다. 송신자가 보낸 패킷이 수신자에게 올바르게 전송되어 송신자가 수신자에게 ACK를 받으면 해당 패킷의 타이머는 종료된다. 개별적인 타이머를 가지므로 유실판단도 개별적으로 판단할 수 이ㅆ다.  
+
+
+
 ## Application Layer
