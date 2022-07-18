@@ -215,6 +215,14 @@ this는 무조건 함수가 호출 될 때 바인딩 된다.
 
 ## Object prototypes
 
+## async function
+promise chain을 더욱 간결하게 표현할 수 있는 비동기식 처리 함수
+
+### Description
+비동기함수는 0개 또는 그 이상의 await를 표현할 수 있다. await는 동기적으로 작동하는 것처럼 프로미스를 반환하기 전에 실행을 중단한다. await 작업을 마친 프로미스의 값은 await 표현의 반환값으로 처리된다. async, await 구문을 사용할 시 try/catch 블록으로 비동기 코드를 감싼다. await를 async함수 내에서 사용하지 않으면 SntaxError를 발생시킨다. await 구문 포함까지 실행은 모두 동기적으로 작동한다. 하지만 그 이후 코드는 비동기적으로 작동한다.
+
+### return
+async function의 반환값은 무조건 promise이다. 만약 반환값이 promise가 아니라면 promise로 감싸서 반환한다. 반환값이 없다면 return promise.resolve(1).then(()=> undefine)으로 반환한다.
 
 ## JSON (JavaScript Object Notation)
 자바스크립트의 Object 문법으로 구조화된 데이터를 표현하기 위한 문자 기반의 표준 포맷이다. 웹 어플리케이션에서 일반적으로 사용한다.  
