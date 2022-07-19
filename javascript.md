@@ -294,6 +294,12 @@ JSON은 자바스크립트의 Object 기반으로 작동하기 때문에 Object�
   ```javascript
   jsn["homeTown"]
   ```
+## this
+자바스크립트에서 this는 동적바인딩된다.
+
+1. 내부함수내에서는 this가 전역객체이다
+2. 객체를 통해 함수가 호출된다면 호출한 객체가 this이다.
+3. 함수객체가 가지고있는 call, apply, bind를 사용하여 명시적으로 바인딩 할수 있다.
 
 ## Object
 
@@ -335,7 +341,8 @@ func.name = 'a'
 프로토타입 체이닝은 모든 객체가 prototype으로 연결되어 있음을 의미한다.
 
 #### Inheriting properties
-체이닝은 property의 상속을 제공한다. 객체에서 특정 property를 찾을 때 해당 객체에 없으면 그 객체의 property에서 찾고 계속적으로 prototype이 null 이 될때까지 계속 반복하여 찾고자 하는 property를 찾는다. 만약 찾을려는 property가 없다면 undefined를 반환한다. 상속된 객체에서 this는 프로토타입의 객체가 아닌 상속받은 객체를 가르킨다.
+체이닝은 property의 상속을 제공한다. 객체에서 특정 property를 찾을 때 해당 객체에 없으면 그 객체의 property에서 찾고 계속적으로 prototype이 null 이 될때까지 계속 반복하여 찾고자 하는 property를 찾는다. 만약 찾을려는 property가 없다면 undefined를 반환한다. 상속된 객체에서 
+는 프로토타입의 객체가 아닌 상속받은 객체를 가르킨다.
 
 
 
