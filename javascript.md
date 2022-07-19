@@ -326,3 +326,18 @@ func.name = 'a'
 
 ### Unnamed function
 변수에 함수이름이 없는(anonymous function)을 할당하면 name 프로퍼티 값은 변수명이 할당된다.
+
+## prototype
+자바스크립트의 모든 객체는 prototype 이라는 object를 가지고 있다. ECMA에 따르면 객체 내부를 뜯어보면 \[\[Prototype\]\]으로 표기된다. 프로토타입은 null을 만날때까지 연결되어 있으며 null은 유일하게 prototype을 가지고 있지 않다. 접근은 Object.getPrototypeOf()와 Object.setPrototypeOf()를 이용하여 접근한다. 자바스크립트 표준은 아니지만 \_\_proto\_\_와 동일하다
+![image](https://user-images.githubusercontent.com/56042451/179647644-0425c090-e0f3-4e4d-84a2-bb4eb676bac3.png)
+
+### prototype chaining
+프로토타입 체이닝은 모든 객체가 prototype으로 연결되어 있음을 의미한다.
+
+#### Inheriting properties
+체이닝은 property의 상속을 제공한다. 객체에서 특정 property를 찾을 때 해당 객체에 없으면 그 객체의 property에서 찾고 계속적으로 prototype이 null 이 될때까지 계속 반복하여 찾고자 하는 property를 찾는다. 만약 찾을려는 property가 없다면 undefined를 반환한다. 상속된 객체에서 this는 프로토타입의 객체가 아닌 상속받은 객체를 가르킨다.
+
+
+
+
+
