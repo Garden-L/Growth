@@ -44,3 +44,71 @@ int main(void) {
 	return 0;
 }
 ```
+
+## segment tree를 이용한 구간합
+
+
+### 소스코드
+```c
+#include<iostream>
+#include<vector>
+#define INF 1000000000+1
+using namespace std;
+
+int arr[100000];
+int n;
+
+class segment {
+private:
+	vector<int> tree;
+
+public:
+	segment() {
+		tree.resize(4*n);
+		init(1, 0, n-1);
+	}
+
+	int init(int node, int start, int end) {
+		if (start == end) return tree[node] = arr[start];
+
+		int mid = (start + end) / 2;
+
+		return tree[node] = min(init(node * 2, start, mid), init(node * 2 + 1, mid + 1, end));
+	}
+
+	int query(int node, int start, int end, int rangeLeft, int rangeRight) {
+		if (start > rangeRight || end < rangeLeft) return INF;
+		if (rangeLeft <= start && end <= rangeRight) return tree[node];
+
+		int mid = (start + end) / 2;
+
+		return min(query(node * 2, start, mid, rangeLeft, rangeRight), query(node * 2 + 1, mid + 1, end, rangeLeft, rangeRight));
+	}
+
+	int query(int rangeLeft,int rangeRight) {
+		return query(1, 0, n - 1, rangeLeft - 1, rangeRight - 1);
+	}
+};
+
+int main(void) {
+	std::ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+
+	int m;
+	cin >> n >> m;
+
+	for (int i = 0; i < n; i++)
+		cin >> arr[i];
+
+	segment seg;
+	
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+
+		cout << seg.query(a, b) << '\n';
+	}
+	return 0;
+}
+```
