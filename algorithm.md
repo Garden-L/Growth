@@ -119,3 +119,63 @@ int main(void) {
 ```c
 
 ```
+
+# divide and conquer 
+### 개념
+> 분할정복(divide and conquer)은 큰 문제를 작은 문제로 쪼개 해결하는 방법이다.
+
+* divide : 문제를 하위문제로 분할. 하위 문제는 주어진 문제와 유사한 형태로 분할 되어야 하며 최소 2개 이상의 하위 문제로 분할 되어야한다.
+* conquer : 하위 문제를 해결한다.
+* combine : 해결된 하위 문제를 조합하여 상위 문제를 해결한다.
+
+### 소스코드
+```c
+// 백준 1780
+#include<iostream>
+#define SIZE 20000
+
+using namespace std;
+
+int N;
+int in[SIZE][SIZE];
+int ans[3];
+bool check(int y, int x, int n) {
+	for (int dy = y; dy < y + n; dy++) {
+		for (int dx = x; dx < x + n; dx++) {
+			if (in[y][x] != in[dy][dx]) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+void solution(int y, int x, int n) {
+	if (check(y, x, n)) {// conquer
+		ans[in[y][x]]++; 
+	}
+	else {
+		int s = n / 3;
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++)
+				solution(y + i * s, x + j * s, n); //divide
+		}
+	}
+}
+
+int main(void) {
+	cin >> N;
+
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+		{
+			cin >> in[i][j];
+			in[i][j]++;
+		}
+	solution(0, 0, 9);
+	cout << ans[0] << endl << ans[1] << endl << ans[2];
+	return 0;
+}
+```
