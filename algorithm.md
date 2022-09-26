@@ -65,6 +65,24 @@ int solution(string s)
 }
 ```
 
+### 4. Problems
+* BJ
+  + https://www.acmicpc.net/problem/10942
+* Programers
+  + https://school.programmers.co.kr/learn/courses/30/lessons/12904
+
+<br></br>
+## Greedy (탐욕법)
+### 1. 개념
+각 단계마다 현재에서 가장 좋은 방법을 선택한다. 이 선택은 남은 선택들에 어떤 영향을 미칠지 고려하지 않는다.
+
+#### greedy choice property (탐욕적 선택 속성)
+탐욕적인 선택으로만으로도 최적해를 구할 수 있다. 동적계획법은 부분문제를 모두 고려하여 답을 도출하지만 탐욕법은 현재의 선택에만 집중한다. 차후 선택은 고려대상이 아니다. 현재 부분문제의 해결답이 차후 부분문제에 사용된다면 동적계획법, 차후에 사용되지 않는다면 탐욕법이다.
+
+#### optimal substructure (최적 부분 구조)
+부분문제의 최적해에서 전체 문제의 최적해를 만들 수 있는지 증명되어야 한다. 탐욕법은 대게 이 속성을 만족하기 때문에 따로 증명할 필요는 없다.
+
+#### 
 
 # Two pointer
 ## 방식
