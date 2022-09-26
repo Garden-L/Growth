@@ -1,3 +1,71 @@
+## 팰린드롬(palindrome)
+
+### 1. 개념
+앞뒤로 뒤집어도 똑같은 문자열을 palindrome이라 한다.
+* 예시
+  + aba  -> aba  O
+  + abba -> abba O
+  + acs  -> sca  X
+
+### 2. 문자열 S가 팰린드롬인지 확인하는 알고리즘, O(N)
+Two pointer 개념을 이용하여 문자열 S가 팰린드롬인지 확인가능하다. start를 시작포인트로 end를 마지막 포인트에 위치시켜 한 개씩 줄여나가면서 일치하는지 확인한다.
+```c++
+bool isPalindrome(const string& s)
+{
+    int left = 0, right = s.length()-1;
+    while (left <= right)
+    {
+        if (s[left] != s[right]) return false;
+        left++;
+        right--;
+    }
+
+    return true;
+}
+```
+
+### 3. 문자열 S의 부분문자열의 팰린드롬 최대 길이를 확인하는 알고리즘, O(N^2)
+two pointer 개념을 이용하여 문자열 S를 순회하면서 순회지점부터 right - left 사이즈를 증가시키면서 각 위치에 문자가 일치하는지 확인한다. 단, 같은 지점에서 시작하는 경우와 옆에서 시작하는 경우 두 가지 케이스를 확인해야한다.
+#### 케이스
+1. left, right가 같은지점에서 시작하는 경우, S="aba"에서 b가 시작지점이라할 때 "aba"를 구할 수 있다. 하지만 S="abba"일 때, 첫번째 b지점에서 시작한다고 하면 이 문자열의 부분문자열은 팰린드롬이 존재하지 않는다.
+2. 1번의 반례 때문에 right는 left의 1만큼 옆에서 시작해야한다. left는 첫 번째 b, right는 두 번째 b에서 시작하면 팰린드롬 "abba"를 구할 수 있다.
+
+```c++
+// 프로그래머스, https://school.programmers.co.kr/learn/courses/30/lessons/12904
+int isPalindrome(const string& s, int left, int right)
+{
+    while (0 <= left && right <= s.length() - 1)
+    {
+        if (s[left] != s[right]) break;
+        left--;
+        right++;
+    }
+
+    //cabad 일경우 left= 0, right= 4 팰린드롬의 최대길이 3
+    //cabbad 일경우 left = 0, right = 5 팰린드롬의 최대길이 4
+    return right - left - 1;
+}
+
+int solution(string s)
+{
+    int answer = 0;
+
+    for (int i = 0; i < s.length(); i++)
+    {
+        int odd, even;
+        odd = isPalindrome(s, i, i); // 같은 지점
+        even = isPalindrome(s, i, i + 1); // 1번 반례
+
+        int _max = max(odd, even);
+
+        answer = max(answer, _max);
+    }
+
+    return answer;
+}
+```
+
+
 # Two pointer
 ## 방식
 1. 한 포인터는 앞에서 나머지 한 포인터는 맨 뒤에서 시작하는 방식. 특정 중간 지점에서 만나는 조건이 종료조건이 된다.
