@@ -88,6 +88,161 @@ int solution(string s)
 * BOJ
   + https://www.acmicpc.net/problem/5585
 
+#### 회의실 배정 문제
+회의실 하나에 사람들이 원하는 시간대의 이용 신청을 받을때, 회의실 이용이 겹치지 않고 최대한 많이 회의를 하는 방법을 강구하는 문제. 회의가 끝나는 순으로 정렬하면 그리디한 문제로 해결 가능하다.
+
+```c++
+//BOJ 1931
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool compare(vector<int>& a, vector<int>& b)
+{
+    //문제의 조건
+    if (a[1] == b[1]) return a[0] < b[0]; 
+    return a[1] < b[1];
+}
+
+int solution(vector<vector<int>>& times)
+{
+    int answer = 0;
+
+    //회의끝시간으로 정렬
+    sort(times.begin(), times.end(), compare);
+
+    int earliest = 0; //최근 끝난 회의의 마지막 시간
+
+    for(int i = 0; i < times.size(); i++)
+    {
+        int meetingBegin = times[i][0], meetingEnd = times[i][1];
+
+        // 최근 끝난 미팅 시간보다 현재 시작할 미팅 시간이 크거나 같다면
+        // 새로운 미팅을 추가할 수 있음
+        if(earliest <= meetingBegin) 
+        {
+            //새로운 미팅 시간을 최근 미팅으로 변경
+            earliest = meetingEnd; 
+            answer++; // 회의한 수
+        }
+    }
+
+    return answer;
+}
+
+int main(void)
+{
+    int n;
+    cin >> n;
+
+    vector<vector<int>> times(n);
+
+    for(int i = 0; i < n; i++)
+    {
+        int a, b;
+        cin >> a >> b;
+        times[i].push_back(a);
+        times[i].push_back(b);
+    }
+
+    cout << solution(times);
+    return 0;
+}
+```
+
+
+#### 최소 신장 트리
+
+<br></br>
+## 최소 신장트리
+### 1. 개념
+### 2. 크루스칼 알고리즘
+크루스칼 알고리즘으 greey algorithm + disjoint set 을 이용한 방법이다. edge의 가중치가 최소인 경로부터 연결하면 최소 가중치로 신장트리를 구성할 수 있다. 최소 비용의 연결.
+
+#### 의사코드
+1. 모든 간선의 가중치를 오름차순으로 정렬한다.
+2. 가중치가 가장 적은 간선의 정점을 연결한다.  
+2-1. 정점이 이미 같은 집합에 속한다면 최소로 연결된 것이므로 연결하지 않는다.
+3. 모든 정점을 끝까지 반복하면 최소 신장 트리가 완성된다.
+
+#### 소스코드
+```c++
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class djs{
+private:
+    vector<int> parent;
+    vector<int> height;
+
+public:
+    djs(int size):
+        parent(size), height(size)
+    {
+        for(int i = 0; i < parent.size(); i++)
+            parent[i] = i;
+    }
+
+    int Find(int n)
+    {
+        while(n != parent[n])
+            n = parent[n];
+        
+        return n;
+    }
+
+    void Union(int a, int b)
+    {
+        a = Find(a);
+        b = Find(b);
+
+        if( a == b) return;
+
+        if( height[a] < height[b]) parent[a] = b;
+        else
+        {
+            parent[b] = a;
+
+            if(height[a] == height[b]) height[a]++;
+        }
+    }
+};
+
+bool compare(vector<int>& a, vector<int>& b)
+{
+    return a[2] < b[2];
+}
+
+int solution(int n, vector<vector<int>> costs)
+{
+    int answer = 0;
+    djs set(n);
+
+    sort(costs.begin(), costs.end(), compare);
+    for(vector<int>& edge: costs)
+    {
+        int v1 = edge[0], v2 = edge[1];
+        int weight = edge[2];
+        if(set.Find(v1) != set.Find(v2))
+        {
+            set.Union(v1, v2);
+            answer += weight;
+        }
+    }
+
+    return answer;
+}
+
+
+```
+
+
+
 # Two pointer
 ## 방식
 1. 한 포인터는 앞에서 나머지 한 포인터는 맨 뒤에서 시작하는 방식. 특정 중간 지점에서 만나는 조건이 종료조건이 된다.
