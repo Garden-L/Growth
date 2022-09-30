@@ -36,8 +36,5 @@ quantization step size(△)가 작을 수록 신호의 손실을 감소 시킬 �
 #### 동영상 원본 영상 크기
 3 bytes/pixel, 해상도 = 7680x4320 pixels/frame, 총 영상 크기 = 3x76580x4320 bytes/frame (1프레임다 100Mbytes)
 24프레임당 60분짜리 영상이라면 8.64Tera bytes/hour이기 때문에 실제로 저장하기에 많은 용량이 필요하기 때문에 *압축기술*필요
-
 <br></br>
-## 데이터 ㅇ
-## 데이터 추ㅏ
-## 
+## 데이터 압축
