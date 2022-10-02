@@ -1,5 +1,49 @@
 # OS
 
+## 빌드과정
+빌드란 작성한 프로그램을 기계어로 번역해서 실행파일을 만들어내는 과정이다.
+
+### 1. 소스코드 작성
+C/C++로 작성 한다.
+<img width="303" alt="image" src="https://user-images.githubusercontent.com/56042451/193445367-30c3be4c-928f-48c2-9d4c-f8f3d0ae3cdf.png">
+
+### 2. Proprocessing (전처리)
+전처리란 컴파일 전 코드를 적절한 상태로 준비 및 처리하는 일이다. 헤더파일 불러오기, define문 치환, 주석 제거 등을 처리한다. 전처리는 전처리기가 처리하게 되고 #으로 시작하는 구문 + 주석을 처리한다고 생각하면 된다. cpp 명령으로 전처리를 실행할 수 있다. 전처리를 실행 후에는 .i 파일이 생성되게 된다.
+<img width="682" alt="image" src="https://user-images.githubusercontent.com/56042451/193445422-f1506a21-fcd1-4a40-9264-173bc2dca7f2.png">
+```c
+$ cpp test.c > test.i
+또는
+$ gcc -E test.c > test.i
+```
+
+#### 자세한 것은 https://www.ibm.com/docs/ko/aix/7.2?topic=c-cpp-command 
+
+
+### 3. compile (컴파일)
+전처리된 파일을 컴파일러가 현재 프로세서에 맞는 어셈블리 코드로 번역해준다. 전처리된 파일(.i)을 어셈블리 파일(.s)로 번역한다.
+
+```c
+$ gcc -S test.i
+```
+![image](https://user-images.githubusercontent.com/56042451/193445716-da16208e-e28a-4381-a7f1-3230425c2e0d.png)
+
+
+### 4. Assemble
+컴파일된 파일을 어셈블러가 Machine Code(이진수)로 번역하여 실제 기계가 읽을 수 있게 한다. 어셈블리파일(.s)를 목적파일(.o)파일로 번역한다. 
+
+```c
+$ as -o test.o test.s
+```
+<img width="703" alt="image" src="https://user-images.githubusercontent.com/56042451/193446080-3d0a3cf2-4465-4c01-b861-1de4456d50ec.png">
+
+
+### 5. Linkng
+생성된 목적파일들을 연결하는 작업이다. 여러 작업들을 분할했다면 이 과정에서 관련있는 서로의 파일들이 엮이게 된다. 또한 정적라이브러리도 여기서 합쳐지게 된다. 이 과정을 마무리로 실행파일(.out, .exe ...)가 생기게된다.
+
+```c
+$ gcc -o a.out test.o
+```
+
 ## Process comunication
 프로세스는 시스템내에서 독립적으로 실행되기도 하지만, 서로 데이터를 주고받으며 협업하기도 한다. 데이터를 주고받을 때는 프로세스끼리 통신을 해야한다. 또한 프로세스 내부에서 스레드끼리 통신이 가능하고, 소켓을 이용하여 각 호스트의 프로세스끼리도 통신이 가능하다.
 
