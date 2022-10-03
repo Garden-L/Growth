@@ -1,3 +1,130 @@
+## 소수
+### 1. 개념
+약수가 자신과 1 밖에 없는 2이상인 정수
+
+### 2. 에라토스테네스의 체, O(Nlog(logn))
+#### 원리
+2부터 N까지 각각의 배수를 제외하면 남은 수는 소수만 남게된다. 여러 소수를 판별할 때 미리 판별 배열을 만들어 놓으면 찾을 때 O(1) 시간에 찾을 수있다.
+
+#### 소스코드
+```c++
+vector<int> eratosthenes(int n);
+{
+    vector<int> ret(n+1, true);
+    
+    for(int i = 2; i <= n/2; i++) // j가 i*2부터 출발하기 때문에 절반까지만 i를 반복한다.
+    	for(int j = i*2; j <= n; j+=2)
+	    ret[i] = false;
+	    
+    return ret;
+}
+```
+
+### 3. 단일 숫자 소수 판별
+#### 원리
+다수의 숫자가 소수인지 판별 할때는 에라토스테네스의 체가 효율적이지만, 소수의 숫자를 판별할 때는 N의 제곱근 보다 작거나 같은 확인하는 것이 효율적이다. N의 제곱근까지 하는 이유는 N이 될려면 N의 약수 a\*b로 이루어져야하는데 a와 b는 최대 N의 제곱근과 같다 ( N^(1/2) x N^(1/2)).
+
+```c++
+bool isPrime(int n)
+{
+    for(int i = 2; i <= sqrt(n); i++)
+        if(n%i != 0) return false;
+
+    return true;
+}
+```
+
+## MOD 연산
+
+### 1. 개념
+MOD는 나머지를 연산자를 의미한다. 
+5 MOD 2 = 1
+
+### 2. 사칙연산
+#### (A+B) MOD C = ((A MOD C) + (B MOD C))MOD C 
+A = CxK + A' -> AmodC = A'  (K=몫, A'=나머지)  
+B = CxR + B' -> BmodC = B'  (0 <= A',B' <C)
+A + B = (K + R)xC + (A' + B') 성립하고,  0<= A'+B' <2C 이므로 (A+B)modC = (A'+B')modC = (AmodC + BmodC)modC 이다.  
+곱셉, 나눗셈, 뺄셈에서도 성립한다.
+
+##### 자세한 것은 https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/modular-multiplication
+
+### 3. 긴 숫자의 나머지 구하기
+C/C++에서는 int, long long 자료형으로는 엄청 긴 숫자의 나머지 연산이 불가능하다. 긴 숫자의 나머지를 구하기 위해서는 나머지 연산자의 성질을 이용하여 해결해야한다.
+
+#### "86430"을 N으로 나눈 나머지 구하기
+"86430"을 표현하면 8x10000 + 6x1000 + 4x100 + 3x10 + 0 으로 표현가능하고 이것을 다시 ((((0x10 + 8)x10 + 6)x10 + 4)x10 + 3)x10 +0 표현할 수있다. 이것은 모듈려 연산 덧셈, 곱셈으로 표현가능 하다.  
+"86430" mod N = (((((0x10 + 8)modNx10 +6)modNx10+6)modNx10+4)modNx10+3)modNx10)modN+0)modN)  
+프로그래밍 할때 최대한 mod 연산을 자제하는 것이 성능에 도움되므로 최대한 나눠야할 값을 높여서 나누는 것이 좋다. (modN x 10modN)modN + 8modN)modN 이런 연산은 자제해야한다.
+
+#### 소스코드
+```c++
+//BOJ 1837
+#include <iostream>
+#include <string>
+#include <vector>
+
+#define SIZE 1000000
+
+using namespace std;
+vector<bool> eratos()
+{
+    vector<bool> ret(SIZE+1, true);
+    for(int i = 2; i <= SIZE/2; i++)
+    {
+        for(int j = i*2; j <= SIZE; j += i)
+            ret[j] = false;
+    }
+
+    return ret;
+}
+
+bool remainZero(const string& s, int n)
+{
+    int re = 0;
+
+    for(char ch : s)
+    {
+        re = (re * 10 + (ch-'0')) % n; // N이 최대 10^6이기 때문에 mod연산을 int 형이 넘지만 안도록 취해주면 된다.
+    }
+    
+    if (!re) return true;
+
+    return false;
+}
+
+void solution(const string &s, int k)
+{
+    vector<bool> isPrime = eratos();
+
+    for(int i = 2; i < k; i++)
+    {
+        if(isPrime[i] && remainZero(s, i))
+        {
+            cout << "BAD " << i;
+            return;
+        }
+    }
+
+    cout << "GOOD";
+}
+
+
+int main(void)
+{
+    string s;
+    int k;
+
+    cin >> s >> k;
+
+    solution(s, k);
+
+    
+    return 0;
+}
+```
+
+<br></br>
 ## 팰린드롬(palindrome)
 
 ### 1. 개념
