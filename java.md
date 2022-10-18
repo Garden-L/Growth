@@ -1,4 +1,56 @@
+## Generic
 
+### 1. 개념
+class, interface, method를 정의할 때 매개변수의 타입을 사용자가 지정하도록 하는 것이다. 제네릭을 프로그래밍은 다른 매개변수 타입에 대하여 재사용성을 증가 시키는 것에 목적을 둔다. 자바는 compile timed에 type parameter를 강하게 검사하기에 잘못된 인수를 넣는 것을 방지한다. 
+
+### 2. generic 클래스 만들기
+#### 기본 제네릭 클래스 정의
+클래스 이름 다음 angle brackets(<>)에 타입 파라메터를 지정한다. 이름은 Tn이 아니여도 상관없다. 
+```java
+// class name<T1, T2, T3, ... , Tn> { ...}
+
+class Box<T>{
+  private T t;
+  
+  public void set(T t) {this.t = t}
+  public T get() { return t;}
+}
+```
+
+#### Type parameter 이름 규약
+type parameter는 단일, 대문자를 원칙으로 한다. 이름 규약 강제적이지는 않지만 일반적으로 자바에서 통용된다.
+* E - Element, 자바 컬렉션 프래임 워크를 확장할 때
+* K - Key
+* N - Number
+* T - Type
+* V - Value
+* S,U,V ect - 2, 3, 4번째 type parameter로 쓰일 때
+
+### 3. generic 클래스 사용하기
+type에는 non-primitive만 가능하다(class, interface, array, even another type variable)
+#### type parameter를 지정하지 않았을 때 (raw type)
+```java
+List list = new ArrayList(); // type parameter를 지정하지 않았음 원시 유형(Raw type)인 List<T> 생성된다.
+// type parameter를 지정하지 않았기 때문에 어떤 객체든 입력가능하다.
+list.add("hello")
+list.add(1) //
+list.add(new Node(10, null));
+
+//단, 사용시 명시적 타입변환을 해야한다.
+String a = (String) list.get(0);
+```
+
+#### type parameter 명시
+```java
+List<String> list = new ArrayList<String>();
+// List<String> list = new ArrayList<>(); // 가능
+list.add("hello");
+// list.add(1) // 타입을 명시했기 때문에 String외 다른 타입은 불가능
+String a = list.get(0); // no cast
+
+```
+
+<br></br>
 ## Exception
 
 ### 1. 개념
