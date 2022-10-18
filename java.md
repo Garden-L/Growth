@@ -1,10 +1,10 @@
 
-> ### Exception
+## Exception
 
-#### 1. 개념
+### 1. 개념
 예외는 프로그램이 실행하는 동안 해당 프로그램의 정상적인 흐름을 방해하는 하나의 이벤트이다. 예외는 프로그램을 강제로 종료시킨다. 예외처리를 핸들링하게 되면 프로그램은 종료하지 않고 예외만 처리하고 계속 실행된다.
 
-#### 2. 예외 클래스
+### 2. 예외 클래스
 자바에서 모든 예외는 Exception 클래스를 상속받는다.  
 <img width="631" alt="image" src="https://user-images.githubusercontent.com/56042451/196189889-a46011e4-fa56-4fc8-b012-5dbe63806d91.png">
 
@@ -15,13 +15,13 @@
 * RuntimeException(Unchecked Exception) : 에러를 핸들링하지 않아도 컴파일 시 오류 발생하지 않음 (명시적 처리 X)
   + NullPorinterException, NumberFromatException ...
 
-##### RuntimeException
+#### RuntimeException
 실행시간예외 클래스는 되도록이면 throws(예외 던지기)를 하지 않는 것이 좋다. 만약 혹시 던져야 한다면 클라이언트가 사용할 때 복구에 관한 것을 전혀 하지 못할 때는 실행시간예외 클래스를 던져도 크게 상관없다. (차후 내용수정)
 
 
-#### 3. 문법
+### 3. 문법
 
-##### throw(강제 예외발생)
+#### throw(강제 예외발생)
 throw는 예외를 강제로 발생한다. throw로 예외만 발생하고 catch로 처리해주지 않으면 그대로 프로그램은 종료되지만 catch로 처리해줄 경우 나머지 연산은 정상적으로 동작하게 된다.
 ```java
 
