@@ -1,3 +1,4 @@
+
 ## Generic
 
 ### 1. 개념
@@ -129,6 +130,9 @@ finally { //예외에 관계없이 finally는 무조건 실행된다.
 }
 ```
 
+<br></br>
+## thread
+### run(), start
 
 
 
