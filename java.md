@@ -1,3 +1,71 @@
+## Write once, Run Anywhere(WORA)
+### 1. 개념
+c/c++은 Write Once, Compile Anywhere(WOCA)라고 불린다. 이는 c/c++소스코드를 작성하면 어디에서든 compile하면 실행한다는 의미이다. compile은 기계어로 번역하는 과정이기 때문에 특정 플랫폼에 맞는 기계어로 변역하기 때문에 플랫폼이 다른 곳에서 작동하려면 다시 재컴파일을 해야한다. 기계어(이진코드)를 실행하기에 속도가 빠르다는 장점이 있지만 컴파일했던 플랫폼과 다르다면 사용자가 다시 재컴파일을 해야한다는 불편함을 감수해야한다. 하지만 자바는 한 번 파일을 작성하고 컴파일하면 어디에서든 실행 가능하다. 자바는 c/c++과 다르게 기계어 번역하는 것이아니 바이트 코드로 번역한다. 바이트 코드는 자바 가상머신이 이해하는 코드이다. 바이트 코드로 번역된 코드는 자바인터프리터가 한줄한줄 읽어 해당 플랫폼에 맞는 기계어로 다시 번역하여 프로그램을 동작시킨다. 자바 가상 머신은 플랫폼에 종속적이기 때문에 각 플랫폼에 알맞게 코드를 번역해야하도록 만들어야하지만 사용자는 이를 신경쓸 필요가없다. 단지 자바 파일만 오류없이 작성하면 되는것이다. 이것을 플랫폼 독립적이라 말한다.
+
+## final키워드
+### 1. 개념
+final 키워드는 클래스, (매개)변수, 함수 등에 쓰여 해당 인스턴스를 변경, 수정을 불가능 하도록한다. final class는 상속이 불가하고, final 변수는 초기화 이후 값을 재할당이 불가능하고 함수는 오버라이딩이 불가능하다. 
+
+### 2. final variable
+final variable 은 선언하자마자 초기화하거나 초기화되지않은 변수(blank final variable or uninitialized final variable)는 **생성자**에서 반드시 초기화 해야한다.
+```java
+class finalVariable{
+    final int num1 = 10;
+    final int num2; // uninitialized variable or blank variable
+    
+    finalVariable(){
+        num2 = 10; // initialize;
+    }
+}
+```
+
+### 3. static final variable
+static final variable은 선언하자마자 초기화 하거나, 초기화되지 않은 변수는 **static block**에서 반드시 초기화해야한다. 생성자는 객체가 생성될때 호출되므로 이미 객체가 생성되기전 생성되는 static 특징 때문에 생성자에서 초기화는 불가능하다.
+```java
+class statcfianlVariable{
+    static final int num1 = 10;
+    static final int num2; // uninitialized static variable or blank static variable
+
+    static{
+        num2 = 10; //  initialize
+    }
+}
+```
+
+### 4. final parameter
+final 매개변수는 수정, 변경이 불가능하다.
+```java
+ void func(final pstaticMethod a){
+        a = new pstaticMethod(); // 변경 불가능
+    }
+```
+### 5. final class
+final class는 상속을 불가능하게 만든다.
+```java
+final class pfinalClass{
+}
+class cfinalClass extends pfinalClass{ // final class 상속 불가능
+    
+}
+```
+### 6. final function
+final function은 오버라이딩이 불가능하다
+```java
+class pfinalMethod{
+    public final void func1(int a, int b){
+        System.out.println(a + b);
+    }
+    public final void func1(int a){
+        System.out.println(a);
+    }
+}
+
+class cfinalMethod extends pfianlMethod{
+    public void func1(int a){ // overriding 불가능
+        System.out.println(a);
+    }
+}
+```
 
 ## Generic
 
@@ -30,6 +98,8 @@ type parameter는 단일, 대문자를 원칙으로 한다. 이름 규약 강제
 ### 3. generic 클래스 사용하기
 type에는 non-primitive만 가능하다(class, interface, array, even another type variable)
 #### type parameter를 지정하지 않았을 때 (raw type)
+객체를 사용 시 명시적으로 형변환을 사용해서 사용해야한다.
+
 ```java
 List list = new ArrayList(); // type parameter를 지정하지 않았음 원시 유형(Raw type)인 List<T> 생성된다.
 // type parameter를 지정하지 않았기 때문에 어떤 객체든 입력가능하다.
