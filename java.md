@@ -238,7 +238,133 @@ finally { //예외에 관계없이 finally는 무조건 실행된다.
     System.out.println("에러가 발생하든 않하든 finally는 무조건 동작합니다.");
 }
 ```
+<br></br>
 
+## Functional interface
+### 1. 개념
+함수형 인터페이스는 단 하나의 추상 메소드를 가지고 있는 인터페이스이다. 자바SE 8 부터 함수형 인터페이스는 람다 표현식으로 사용될 수 있다. 함수형 인터페이스는 다수의 default 메소드 및 static 메소드를 가질 수 있다. 대표적인 함수형 인터페이스는 Runnable, ActionListener, Comparable 등이 있다. 함수형 인터페이스는 다른 말로는 Single Abstract Method Interface(SAM interface)라고도 한다. 자바 java.util.function에 다양한 functional interface가 내장되어있다.
+
+### 2. 사용
+자바SE 8 이전에서는 익명 내부 클래스로 사용했다.
+```java
+public class test {
+    public static void main(String args[]){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Override run function");
+            }
+        });
+    }
+}
+```
+자바SE 8이후로 functional interface를 람다 함수로 사용할 수 있다.
+```java
+public class test {
+    public static void main(String args[]){
+        new Thread(()->{System.out.println("Override run method,");});
+    }
+}
+```
+
+#### @FunctionalInterface Annotation
+@FunctionalInterface 어노테이션을 사용하면 함수형 인터페이스가 추상 메소드 2개 이상 갖지 안도록 보장한다. 어노테이션 사용은 강제화는 아니지만 명시적으로 지정해주는 것이 좋을듯하다. 
+```java
+@FunctionalInterface // 함수형 인터페이스 보장
+interface Anno{
+    abstract void func1();
+
+    public static void func2(){
+        System.out.println("스태틱 사용가능");
+    }
+
+    default void func3(){
+        System.out.println("JavaSE 8부터 default 메소드도 가질 수 있다.");
+    }
+}
+
+class child implements Anno{
+    @Override
+    public void func1() {
+        System.out.println("child func1");
+    }
+
+    @Override
+    public void func3(){
+        Anno.super.func3();
+        System.out.println("child func3");
+    }
+}
+
+public class test {
+    public static void main(String args[]){
+        Anno t = ()->{System.out.println("람다식으로 표현");};
+
+        t.func1();
+        t.func3();
+
+        Anno t2 = new child();
+        t2.func1();
+        t2.func3();
+
+    }
+}
+```
+
+## lambda function
+### 1. 개념
+람다 표현식은 기본적으로 functional interface의 인스턴스이기 때문에 람다식으로 작성할 객체가 functional interface인지 확인해야한다. 
+
+### 2. Annonymouse vs Lambda
+익명 클래스와 비교하여 람다식은 길이 이외 다를 것이 없다. 익명 클래스의 길이를 함축한 것이 람다식이다 동작은 익명클래스와 똑같이 동작한다. 단지 익명클래스는 1개 이상의 추상 메소드를 재정의하여 구현할 수 있지만 람다는 무조건 functional interface인지 확인해야한다.
+```java
+// 추상 메소드가 2개이상이므로 functional interface가 되지 못하여 람다로 작성 불가능하다.
+interface Anno{
+    abstract void func1();
+    abstract void func2(); 
+}
+
+public class test {
+    public static void main(String args[]){
+        Anno t = new Anno(){
+            @Override
+            public void func1() {
+                System.out.println("func1 재정의");
+            }
+
+            @Override
+            public void func2() {
+                System.out.println("func2 재정의");
+            }
+        };
+        t.func1();
+        t.func2();
+    }
+}
+```
+
+### 3. 사용
+#### parameter가 없는경우
+```java
+() -> { ... }
+```
+
+#### parameter가 있는경우
+```java
+(int a, int b) -> {...}
+```
+
+#### 반환 값이 있는경우
+```java
+(int a, int b) -> a*b; // 바로 반환값을 작성할 수 있는 경우 중괄호 없이 반환가능
+(int a, int b) -> { c = a*b; return c} // 바로 반환 값을 작성 못하면 중괄호 필수
+```
+
+#### 객체 대입
+```java
+Runnable의 람다표현식 익명 클래스와 같으므로 Runnable로 참조 가능하다.
+Runnable run = ()-> {System.out.println("객체에 대입")};
+```
 <br></br>
 ## thread
 ### run(), start
