@@ -2,6 +2,56 @@
 자바 정리~
 <br></br>
 
+## Polymorphism
+### 1. 개념
+Polymorphims(다형성)이란 OOP(Object Oriented Programming)을 개념 중 하나로 하나의 기능이 상황에 따라 다르게 작동하는 것이다. 프로그래밍 언어에서 다형성을 실현하는 방법으로는 method Overriding, method Overloading이 있다.
+
+### 2. Method Overloading(compile time polymorphism)
+메소드 오버로딩은 같은 클래스 내에서 같은 이름의 함수가 매개변수(메소드 시그니처)의 따라 다르게 작동하는 것이다. 오버로딩된 함수는 compile time에 어떤 함수가 호출될지 결정되므로 **compile time polymorphism** 이라고도 한다. 오버로딩된 함수는 호출 시 모호하면 compile error를 발생시킨다.
+
+* 메소드 시그니처(method signature) : 메소드 선언부에 명시되는 매개변수의 리스트, 같은 매개변수의 수 같은 매개변수 타입이면 메소드 시그니처는 동일하다.
+
+```java
+public class Processor {
+
+	public void process(int i, int j) {
+		System.out.printf("Processing two integers:%d, %d", i, j);
+	}
+
+	public void process(int[] ints) {
+		System.out.println("Adding integer array:" + Arrays.toString(ints));
+	}
+
+	public void process(Object[] objs) {
+		System.out.println("Adding integer array:" + Arrays.toString(objs));
+	}
+}
+```
+
+### 3. Method Overriding(runtime polymorphism)
+메소드 오버라이딩은 상속관계에서 superclass의 함수를 재정의 하는 것이다. 오버라이딩된 함수는 runtime에 결정되므로 **rumtime polymorphism** 이라고도 한다. 오버라이딩 함수는 에러는 런타임시 확인할 수 있다. 오버라이딩 함수의 쓰임에서 가장 강력함을 발휘 할때는 Upcasting될때다. 
+```java
+class MathProcessor extends Processor {
+
+	@Override
+	public void process(int i, int j) {
+		System.out.println("Sum of integers is " + (i + j));
+	}
+
+	@Override
+	public void process(int[] ints) {
+		int sum = 0;
+		for (int i : ints) {
+			sum += i;
+		}
+		System.out.println("Sum of integer array elements is " + sum);
+	}
+
+}
+```
+#### Upcasting(업캐스팅)
+업캐스팅은 superclass가 subclass를 가리키는 것이다. 특정 부모클래스를 상속받는 클래스는 모두 업캐스팅으로 캐스팅하면 각각 다르게 작동시킬 수 있다.
+
 ## JVM
 ### 1. 개념
 JVM(Java Virtual Machine)은 자바 컴파일러에 의해 컴파일된 자바 파일(.class)파일을 읽어 실행시키고 자바의 메모리 관리, 안정적인 실행 환경을 위한 자바의 기본 어플리케이션이다. JVM은 JRE에 포함된다.  
