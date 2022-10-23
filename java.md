@@ -2,6 +2,21 @@
 자바 정리~
 <br></br>
 
+## Data type
+
+### 1. Primitive type
+원시 타입은 실제 데이터 값을 저장하는 타입을 말한다. 자바에서는 8가지 primitive type을 제공한다. 
+* int 
+* float
+* boolean
+* double
+* long
+* byte
+* short
+
+### Reference type
+참조 타입은 단순히 메모리 번지를 참조하는 타입이다. 자바의 Object들은 모두 reference type으로 선언된다. 
+
 ## Polymorphism
 ### 1. 개념
 Polymorphims(다형성)이란 OOP(Object Oriented Programming)을 개념 중 하나로 하나의 기능이 상황에 따라 다르게 작동하는 것이다. 프로그래밍 언어에서 다형성을 실현하는 방법으로는 method Overriding, method Overloading이 있다.
