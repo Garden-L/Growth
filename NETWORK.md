@@ -126,12 +126,12 @@ TCP서버와 클라이언트와 같이 두 호스트 사이에 실질 데이터 
 <img width="611" alt="image" src="https://user-images.githubusercontent.com/56042451/198359720-7dd1fb53-28f9-4d77-93ad-1d646c2fce67.png">  
 TCP 헤더를 보면 SYN(synchronization), ACK(ackowledgement, acknowledgement number와 다른 필드) 필드가 있다. 그리고 TCP 헤더는 최소 20바이트에서 옵션 필드의 최대 40바이트 사용까지 합쳐 60바이트까지 가능하다.
 
-### 2. 연결을 위한 3-way handshake 과정
+### 2. 연결을 위한 4-way handshake 과정
 #### 1. Client -> Server
 클라이언트는 TCP연결을 위해 서버에게 SYN message를 보낸다. SYN message는 SYN flag를 1로 설정한 메세지를 뜻하고 그 외 서버와 동기화를 위해 시퀀스넘버, ACK, window size, maximum segment size 등 여러가지 설정을 진행한다.
 
 #### 2. Server -> Client
-서버는 클라이언트가 보낸 SYN message를 확인하고 SYN와 ACK 필드를 1로 세팅하고 클라이언트에 메세지를 보낸다. 이때 acknowledgement number는 받았던 패킷의 sequence number에서 1증가한 만큼으로 세팅한다. 그리고 서버의 window size, maximum segment size를 클라이언트에게 알린다. 이로서 클라이언트와 서버 사이간 연결이 생성되었다.
+서버는 클라이언트가 보낸 SYN message를 확인하고 SYN와 ACK 필드를 1로 세팅하고 클라이언트에 메세지를 보낸다. 이때 acknowledgement number는 받았던 패킷의 sequence number에서 1증가한 만큼(메시지 크기가 없기 때문)으로 세팅한다. 그리고 서버의 window size, maximum segment size를 클라이언트에게 알린다. 이로서 클라이언트와 서버 사이간 연결이 생성되었다.
 
 #### 3. Client -> Server
 클라이언트는 서버가 보낸 ACK, SYM message를 확인하고 acknowledgement number를 1만큼 증가하고 ACK 플래그만 1로 세팅해서 다시 서버로 보낸다. 이로써 서버와 클라이언트 사이간 연결이 완성되었다. 이 단계 연결에서 클라이언트는 ACK메세지와 동시에 데이터를 담아 서버에 보낼 수 있다.
@@ -149,3 +149,15 @@ TCP 헤더를 보면 SYN(synchronization), ACK(ackowledgement, acknowledgement n
 
 #### 3. Client -> Server
 클라이언트는 ACK 플래그를 1로 설정, acknowledgement number를 1 증가 후 서버에게 메세지를 보낸다. 서버와 클라이언트간 연결이 종료되었다.
+
+## Window Scale Option(RFC 1323)
+### 1. 개념
+윈도우 스케일은 TCP 포멧을 확인하면 16비트로 최대 64Kbytes(2^16)까지 데이터를 보낼 수 있다. 하지만 현실적으로 64Kbytes는 초당 1기가까지 보내는 회선을 다 활용하기에는 너무 적은 수치이다. 그래서 윈도우 스케일 옵션을 추가하여 16비트에서 30비트(1GBytes)까지 보낼 수 있도록 확장했다. 이 옵션은 무조건 3 hand shake과정에서 SYN 플래그가 1로 설정 될 때만 보낸다. 핸드쉐이크 과정에서 SYN 플래그가 설정되는 경우는 총 2번이다. 이 2번에서 1번은 클라이언트에 윈도우 스케일 설정, 나머지 한 번은 서버의 윈도우 스케일을 설정하는 것이다. 그리고 설정된 윈도우 스케일은 연결을 다시 하지 않는 이상 재설정은 불가능하다. 재설정을 못하게 막는 이유는 TCP 패킷에 들어가는 데이터 오베헤드를 감소하기 위해서다 
+
+### 2. 포맷
+TCP Window Scale Option(WSopt)은 총 3바이트 옵션 크기를 차지한다. 윈도우의 최대크기는 현재 2^31 보다 작아야한다. 쉬프트는 최대 14만큼까지 이동할 수 있기 때문이다(최대 1GBytes). 만약 14를 초과하면 14로 사용해버린다.
+* kind = 3 // Wsopt를 나타낸다.
+* Length = 3 // 3bytes크기를 나타낸다
+* shift.cnt = 5 // 5비트 만큼 좌측으로 이동한다. 2^5승크기의 곱
+
+
