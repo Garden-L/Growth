@@ -1,3 +1,38 @@
+## LIS(Longest Increasing Subsequence)
+### 1. 개념
+원소가 n개인 배열에 일부 원소를 골라 만들어낸 부분 수열 중에서 각 원소가 이전 원소보다 크고 가장 긴 부분수열을 최장 증가 부분수열이라한다.  
+S = { 5, 2, 3, 6, 4 }의 배열이 주어지면 LIS는 { 2, 3, 6 }, { 2 ,3, 4 }이다.
+
+### 2. DP를 이용한 LIS 방법
+#### DP 원리
+현재 원소를 포함하는 가장 긴 LIS는 현재 원소의 이전 원소 중에서 현재 원소보다 작지만 그 중 가장 큰 원소가 가진 LIS에 +1만큼 한 것이다.
+
+```
+의사코드  
+prev = S[cur]보다 작은 원소 중 가장 긴 원소  
+LIS[cur] = LIS[prev] + 1  
+```
+
+#### 구현 (O(N^2)
+```c++
+const int sSize = S.size();
+
+int LIS[sSize] = {0};
+
+for(int cur = 0; cur < sSize; cur++)
+{
+	LIS[cur] = 1;
+	for(int prev = 0; prev < cur; prev++)
+		if(S[prev] <S[cur])
+			LIS[cur] = std::max(LIS[cur], LIS[prev] + 1)
+}
+```
+
+### 3. Binary search를 이용한 LIS 방법
+
+
+
+<br></br>
 ## Dynamic programming
 ### 1. 개념
 
