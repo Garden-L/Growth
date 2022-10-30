@@ -120,13 +120,13 @@ GBN의 주요 문제점은 패킷이 하나만 유실돼도 윈도우안에 있�
 > 개인정보와 같은 private한 데이터를 쿠키로 단순하게 보낼 시 보안에 취약하다. 세션은 쿠키의 단점을 보완하기 위해서 쿠키에 암호화된 SID(Session ID)를 담아서 클라이언트에 보내고 본래의 데이터는 서버에 저장한다. 세션의 데이터가 많으면 서버의 오버헤드가 커지기 때문에 세션으로 해야할 데이터인지 쿠키로 해도되는 데이터인지 잘 구분하여 사용하여야한다.
 
 
-## 3-Way handshake
+## TCP 연결
 ### 1. 개념
 TCP서버와 클라이언트와 같이 두 호스트 사이에 실질 데이터 통신전 네트워크를 연결하는 메카니즘이다. 두 호스트 사이에서는 반드시 synchronization과 acknowledgement 패킷을 교환해야한다.   
 <img width="611" alt="image" src="https://user-images.githubusercontent.com/56042451/198359720-7dd1fb53-28f9-4d77-93ad-1d646c2fce67.png">  
 TCP 헤더를 보면 SYN(synchronization), ACK(ackowledgement, acknowledgement number와 다른 필드) 필드가 있다. 그리고 TCP 헤더는 최소 20바이트에서 옵션 필드의 최대 40바이트 사용까지 합쳐 60바이트까지 가능하다.
 
-### 2. 연결을 위한 4-way handshake 과정
+### 2. 연결을 위한 3-way handshake 과정
 #### 1. Client -> Server
 클라이언트는 TCP연결을 위해 서버에게 SYN message를 보낸다. SYN message는 SYN flag를 1로 설정한 메세지를 뜻하고 그 외 서버와 동기화를 위해 시퀀스넘버, ACK, window size, maximum segment size 등 여러가지 설정을 진행한다.
 
@@ -140,15 +140,44 @@ TCP 헤더를 보면 SYN(synchronization), ACK(ackowledgement, acknowledgement n
 <img width="852" alt="image" src="https://user-images.githubusercontent.com/56042451/198365787-4b8dae00-ce8d-4f05-b07d-b18d0e27c856.png">
 
 
-### 3. 종료를 위한 3-way handshake 과정
-#### 1. Client -> Server
-클라이언트는 FIN 플래그를 1로 설정, ACK 플래그는 0으로 설정, 시퀀스 넘버는 랜덤으로 설정 한 후 서버에게 메세지를 보낸다. 
+## TCP 종료
+### 1. 개념
+TCP 연결에서 더 이상 보낼 데이터가 없으면 연결을 해제해야한다. 연결 종료는 두 종단간 사이 어느 누가 종료 시그널을 보내도 상관 없다. 서버-클라이언트 모델에서는 주로 클라이언트가 종료 요청을 하게 되지만 서버가 먼저 할 수 도있다. TCP 연결 종료에서는 종료를 먼저 요청하는 쪽을 Active close, 종료 요청을 받는 쪽을 Passive close라고 한다. 클라이언트가 보낼 데이터가 없어 서버에 종료를 요청하면 클라이언트는 Active close, 서버는 Passive close이다. TCP 종료를 어플리케이션 수준에서 제대로 처리하지 못하면 TCP 자원이 제대로 회수되지 못하여 자원의 낭비가 발생하기 때문에 제대로 처리해야한다. 이런 경우가 생기는 이유는 연결 종료는 연결시작과는 다르게 누가 먼저 해야할지 정해져 있지 않기 때문이다.
 
-#### 2. Server -> Client
-서버는 FIN, ACK 플래그를 1로 설정, acknowledgement number를 1 증가 후 클라이언트로 메세지를 보낸다. 클라이언트와 서버간의 연결이 종료되었다.
+### 2. TCP state
+1. FIN-WAIT-1 : 연결된 상대 TCP의 연결 종료 요청을 기다리는 상태이거나 이전에 보냈던 연결종료 요청에 대한 ACK 메세지를 기다리는 상태이다. 일반적으로 이 상태는 보통 짧은 시간을 갖는다.
+2. FIN-WAIT-2 : 상대 TCP의 종료 요청을 기다리는 상태
+3. CLOSE-WAIT : 상대 TCP의 종료 요청을 받고, 로컬 애플리케이션의 종료 요청을 기다리는 상태
+4. LAST-ACK : 이전에 보냈던 종료 요청에 대한 ACK 메세지를 기다리는 상태.
+5. TIME-WAIT : 상대 TCP가 ACK 메세지를 제대로 받고 CLOSE를 제대로 처리하기 위해 기다리는 상태
+6. CLOSE : 오든 종료(상대 TCP, 로컬 애플리케이션)요청에 대한 메시지를 받고 ACK 메세지를 기다리는 상태
+7. CLOSED : TCP의 연결이 종료된 상태
 
-#### 3. Client -> Server
-클라이언트는 ACK 플래그를 1로 설정, acknowledgement number를 1 증가 후 서버에게 메세지를 보낸다. 서버와 클라이언트간 연결이 종료되었다.
+### 3. 과정
+#### 예제 
+<img width="488" alt="image" src="https://user-images.githubusercontent.com/56042451/198864366-bfd49839-24e4-4ead-a526-6846a8a55876.png">  
+#### 1. Active close 종료 요청 
+예제에서 client가 종료 요청(close())을 하므로 클라이언트는 Acitve close가 되고 TCP 메세지에 FIN flag를 1로 설정한 후 서버(Passive close)에 종료 요청을 보내고 자신은 FIN-WAIT-1 상태에 빠지게 된다.
+
+#### 2. Passive close 종료 승인
+서버 측에서는 FIN flag에 1이 설정된 것을 확인한 후 클라이언트가 종료하고자 함을 판단하고, 자신도 종료를 하겠다고 ACK 메세지를 보내게 된다. 이때 서버가 보내는 acknowlegement number는 sequence number + 1이다. 그리고 서버 자신은 CLOSE-WAIT 상태에 들어간다.
+
+#### 3. Active close 서버 종료진행 확인
+클라이언트에서는 서버에서 보낸 ACK 메세지를 확인하고 서버가 종료 진행과정을 시작했다는 것을 판단하고 자신은 FIN-WAIT-2 상태로 들어간다. FIN-WAIT-2 상태에서 서버에서 FIN flag가 1로 설정된 메세지가 안오면 일정 시간이 지난 후 자동으로 TIME-WAIT 상태로 진입하게 된다.
+
+#### 4. Passive close 서버 애플리케이션 종료
+CLOSE-WAIT에 들어간 TCP는 서버 애플리케이션에 종료 요청을 하고 서버 애플리케이션이 종료하면 TCP는 FIN flag를 1로 설정 후 클라이언트에 메세지를 보내게된다. 그리고 LAST-ACK 상태에 진입하게 된다.
+
+#### 5. Active close TIME-WAIT 진행
+FIN flag가 1로 설정된 서버측의 메세지를 받으면 FIN-WAIT-2 상태는 TIME-WAIT으로 진행하고, 서버에 ACK 메세지를 보낸다.   
+TIME-WAIT에서는 OS 레벨에서 널널하게 설정되어있는데 이런 이유는 첫 번째로 기다리는 시간이 길지 않아서 다른 TCP연결이 일어나고 이전 TCP에서 유실 또는 에러난 패킷이 재전송되어있던게 온고 시퀀스 번호까지 새로운 TCP연결에서 보낸 것과 동일하다면 새로운 TCP연결이 보낸 패킷이라 인식하고 데이터 무결성이 깨지게된다. 두 번째는 Active closer가 보낸 마지막 ACK 패킷이 유실된 경우 Passive closer는 LAST-ACK 상태에 머무르게 되고 새로운 TCP연결 요청되게 되면 Passive closer는 RST를 보내게된다. 
+
+#### 6. Passive close CLOSED
+서버는 CLOSED 상태에 들어가고 모든 TCP 자원은 회수가 된다.
+
+#### 7. Active close CLOSED
+클라이언트에 연결은 모두 종료된 상태.
+
 
 ## Window Scale Option(RFC 1323)
 ### 1. 개념
