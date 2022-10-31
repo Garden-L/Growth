@@ -169,9 +169,11 @@ TCP 연결에서 더 이상 보낼 데이터가 없으면 연결을 해제해야
 CLOSE-WAIT에 들어간 TCP는 서버 애플리케이션에 종료 요청을 하고 서버 애플리케이션이 종료하면 TCP는 FIN flag를 1로 설정 후 클라이언트에 메세지를 보내게된다. 그리고 LAST-ACK 상태에 진입하게 된다.
 
 #### 5. Active close TIME-WAIT 진행
-FIN flag가 1로 설정된 서버측의 메세지를 받으면 FIN-WAIT-2 상태는 TIME-WAIT으로 진행하고, 서버에 ACK 메세지를 보낸다.   
-TIME-WAIT에서는 OS 레벨에서 널널하게 설정되어있는데 이런 이유는 첫 번째로 기다리는 시간이 길지 않아서 다른 TCP연결이 일어나고 이전 TCP에서 유실 또는 에러난 패킷이 재전송되어있던게 온고 시퀀스 번호까지 새로운 TCP연결에서 보낸 것과 동일하다면 새로운 TCP연결이 보낸 패킷이라 인식하고 데이터 무결성이 깨지게된다. 두 번째는 Active closer가 보낸 마지막 ACK 패킷이 유실된 경우 Passive closer는 LAST-ACK 상태에 머무르게 되고 새로운 TCP연결 요청되게 되면 Passive closer는 RST를 보내게된다. 
-
+FIN flag가 1로 설정된 서버측의 메세지를 받으면 FIN-WAIT-2 상태는 TIME-WAIT으로 진행하고, 서버에 ACK 메세지를 보낸다. 이미 이 상태는 애플리케이션과 TCP 소켓의 연결은 끊어진 상태고, 단지 TCP 자원만 점유하고 있는 상태이다.  
+* TIME-WAIT가 존재하는 이유
+  + active closer가 보낸 ack패킷 유실 : 만약 마지막으로 보낸 active closer의 ack패킷이 유실된다면 passive closer는 LAST-ACK 상태에 머무르게 되고 자신의 패킷이 유실되서 ACK가 안오는지 단지 ACK가 유실되서 안오는 건지 알 수 없기 때문에 FIN패킷을 보내게된다. 하지만 TIME-WAIT가 없는 active closer는 이미 closed상태이기 때문에 TCP 자원을 반납하였고 passive closer는 계속 FIN 패킷만 보내고 자원을 회수 못하게된다. 
+  + 연결이 해제된 사용자가 다시 동일 포트로 재연결을 시도할 때 : 만약 연결이 해제된 사용자가 기존에 보냈던 데이터가 담긴 패킷이 active closer에게 도착하지 못한채 이미 연결이 해제된 상태에서 사용자가 동일 포트로 연결을 시도하고 연결이 된 후 새로운 데이터를 보내는 과정에서 새로운 데이터가 담긴 패킷과 기존에 도착하지 못했던 패킷이 동일한 시퀀스 넘버로 도착하게 된다면 active closer에서는 기존에 도착하지 못했던 패킷을 새로운 패킷으로 인식하여 데이터 무결성이 깨지게 된다. 이 때문에 TIME-WAIT 시간을 설정하여 설정한 시간(2MSL, centos는 60초)동안은 TCP 자원을 점유하고 있으면서 동일한 TCP자원으로 연결이 되지 못하도록 한다. 
+  
 #### 6. Passive close CLOSED
 서버는 CLOSED 상태에 들어가고 모든 TCP 자원은 회수가 된다.
 
