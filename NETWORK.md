@@ -166,8 +166,7 @@ TCP 연결에서 더 이상 보낼 데이터가 없으면 연결을 해제해야
 3. CLOSE-WAIT : 상대 TCP의 종료 요청을 받고, 로컬 애플리케이션의 종료 요청을 기다리는 상태
 4. LAST-ACK : 이전에 보냈던 종료 요청에 대한 ACK 메세지를 기다리는 상태.
 5. TIME-WAIT : 상대 TCP가 ACK 메세지를 제대로 받고 CLOSE를 제대로 처리하기 위해 기다리는 상태
-6. CLOSE : 오든 종료(상대 TCP, 로컬 애플리케이션)요청에 대한 메시지를 받고 ACK 메세지를 기다리는 상태
-7. CLOSED : TCP의 연결이 종료된 상태
+6. CLOSED : TCP의 연결이 종료된 상태
 
 ### 3. 과정
 #### 예제 
@@ -207,6 +206,51 @@ TCP Window Scale Option(WSopt)은 총 3바이트 옵션 크기를 차지한다. 
 * Length = 3 // 3bytes크기를 나타낸다
 * shift.cnt = 5 // 5비트 만큼 좌측으로 이동한다. 2^5승크기의 곱
 
+## Network layer
+### 1. 개념
+Network laye는 Open Systems Interconnection(OSI)의 3계층에 존재한다. 네트워크 계층에 주요기능은 데이터(데이터그램)를 다른 네트워크 상으로 이동시키는 것이다. 데이터를 이동기위해 목적지에 대한 정보를 추가하고(캡슐화), 효율적인 경로를 선택하여 전송한다(라우팅). 대표적인 3계층 장비로는 라우터가 있다.
+
+### 2. 캡슐화
+네트워크 계층은 전송계층(4계층)에서 받은 데이터(TCP: segment, UDP : datagram)에 IP Header를 추가하여 Packet을 만들어 Link Layer(2계층)에 전달한다. 
+
+### 3. Network Header
+<img width="787" alt="image" src="https://user-images.githubusercontent.com/56042451/199282011-e2cd58d9-a473-4a4b-a986-c50908cf70ba.png">
+
+* version : 4bits로 해당 IP 버전을 나타낸다. 대부분 IPv4를 사용하여 0100로 표시된다. 만약 라우터가 버전을 지원하지 않는다면 패킷은 드랍된다.
+* Internet Header Length : 인터넷 헤더의 가로 길이는 32bits words로 이루어져있다. Header 크기는 최소 20bytes이기 때문에 IHL은 최소 5(4bytes\*5 = 20bytes)이다. 최대 4비트로 표현하므로 네트워크 헤더의 길이는 20 ~ 60 까지 표현될 수 있다.
+* type of service(8bits) : 
+* Total Length(16bits) : data(segment or datagram) 크기와 network header 크기를 합친 값이다. (application data + tcp header + network header). 16비트이므로 최대 65,535바이트까지 가능하다.   
+    Total Length is the length of the datagram, measured in octets,
+    including internet header and data.  This field allows the length of
+    a datagram to be up to 65,535 octets.  Such long datagrams are
+    impractical for most hosts and networks.  All hosts must be prepared
+    to accept datagrams of up to 576 octets (whether they arrive whole
+    or in fragments).  It is recommended that hosts only send datagrams
+    larger than 576 octets if they have assurance that the destination
+    is prepared to accept the larger datagrams.
+
+    The number 576 is selected to allow a reasonable sized data block to
+    be transmitted in addition to the required header information.  For
+    example, this size allows a data block of 512 octets plus 64 header
+    octets to fit in a datagram.  The maximal internet header is 60
+    octets, and a typical internet header is 20 octets, allowing a
+    margin for headers of higher level protocols.
+* Identification(16bits) : 송신자가 보낸 조깨진 데이터그램들을 수신자측에서 조립하기 위한 식별자이다.
+* Flag(3bits) : 다양한 제어 플래그  
+    bit 0은 예약된 비트로 반드시 0으로 설정되어야 한다.
+    bit 1은 1이면 조각으로 나뉘어져 있음을 표현
+    bit 2는 0이면 마지막 조각, 1이면 조각이 더 있음을 표현
+* Fragment Offset(13bits) : 데이터 그램에서 조각이 어디에 위치해 있는지 표현
+* Time to Live(8bits) : 데이터 그램이 인터넷 시스템에서 남아 있을 수 있는 최대 시간을 표현한다. 만약 필드가 0으로 설정되면 데이터그램은 바로 파괴된다. 이 필드는 인터넷 헤더 처리에 의해 변경된다. 시간은 초단위로 설정된다. This field indicates the maximum time the datagram is allowed to
+    remain in the internet system.  If this field contains the value
+    zero, then the datagram must be destroyed.  This field is modified
+    in internet header processing.  The time is measured in units of
+    seconds, but since every module that processes a datagram must
+    decrease the TTL by at least one even if it process the datagram in
+    less than a second, the TTL must be thought of only as an upper
+    bound on the time a datagram may exist.  The intention is to cause
+    undeliverable datagrams to be discarded, and to bound the maximum
+    datagram lifetime.
 
 ## 용어
 ### 1. TCP Segment
