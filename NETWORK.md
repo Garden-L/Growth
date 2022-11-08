@@ -352,25 +352,25 @@ IPv4 디자이너들은 재조립을 위해 IP header에 identification, flag, f
 
 세그먼트 크기가 8968 이므로 단편화 시키면
 1번째 패킷
-  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation = 0
-
+  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation offset = 0
+ 
 2번째 패킷
-  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation = 1480
+  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation offset = 1480
 
 3번째 패킷
-  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation = 2960
+  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation offset = 2960
   
 4번째 패킷
-  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation = 4440
+  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation offset = 4440
   
 5번째 패킷
-  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation = 5920
+  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation offset = 5920
   
 6번째 패킷
-  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation = 7400
+  data = 1480바이트, IP header size = 20바이트, flag = 010(마지막패킷이 아님), Identification = 0x01(원본과 동일), fragmentation offset = 7400
   
 7번째 패킷
-  data = 88바이트, IP header size = 20바이트, flag = 000(마지막패킷), Identification = 0x01(원본과 동일), fragmentation = 8880
+  data = 88바이트, IP header size = 20바이트, flag = 000(마지막패킷), Identification = 0x01(원본과 동일), fragmentation offset = 8880
 ```
 
 #### wireshark
