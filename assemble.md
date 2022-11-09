@@ -1,13 +1,22 @@
 # ARM
 
-## Register
-### 1. 개념
-
-### 2. Base register
+<br></br>
+# Register
+> 다양한 레지스터에 대한 설명입니다.
+## Base register란?
 베이스 레지스터는 데이터의 full(전체), absolute(절대), virtual(가상) 주소를 접근할 수 있는 주소이다. C에서 포인터의 역할과 같다. 베이스 레지스터의 값을 참조하려면 레지스터 이름을 대괄호에 넣어서 사용하면된다(\[X\]). arm에서 베이스 레지스터는 X레지스터이다(X1, X2,...)
 
-### 3. Segment register
+## Segment register란?
 메모리 분할과 관련한 레지스터를 의미한다. 보호모드에서는 세그먼트 셀렉터로 이름을 변경하였다. 디스크립터 테이블을 가르킨다.
+
+## Control register
+### control register란?
+다양한 운영모드를 제어하는 레지스터
+#### CR0 
+운영모드를 제어하는 레지스터. 80386 시스템에서는 32bit길이이다. 64비트 시스템에서는 64비트 길이를 갖는다. 과거 16비트 MSW(Machine State Word)레지스터에 발달이 CR0로 변화한 것이다.  
+<p align="center"><img width="628" alt="image" src="https://user-images.githubusercontent.com/56042451/200716546-f53f67f0-080e-4831-b33b-6a20baf48950.png"></p>
+* PG(Paging Enable) : PG 비트가 1로 설정되면 페이징 유닛을 사용할 수 있다.
+* PE(Protection Enable) : PE비트가 1로 설정되면 보호모드로 진입할 수 있다.
 
 ## Instruction set
 ### STR
