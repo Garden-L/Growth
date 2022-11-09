@@ -9,6 +9,19 @@
 ## Segment register란?
 메모리 분할과 관련한 레지스터를 의미한다. 보호모드에서는 세그먼트 셀렉터로 이름을 변경하였다. 디스크립터 테이블을 가르킨다.
 
+## General-Purpose Register(범용 레지스터)
+### 범용 레지스터란?
+메모리 주소나, 값을 저장하는 용도의 레지스터, 하위 비트를 호환하기 위해 32비트 레지스터에서는 32비트일땐 EAX, 16비트일땐 AX, 상위 바이트는 AH, 하위바이트는 AL로 나타낸다. 현대의 컴퓨터는 최대 64비트의 레지스터를 사용하는 64비트 레지스터는 접두사 R이 붙어 RAX가 된다. 사용하는 용량에 따라 이름만 다를 뿐이지 하나의 레지스터이다.
+### 포맷
+<img width="407" alt="image" src="https://user-images.githubusercontent.com/56042451/200746505-e3fd4432-06b3-4223-be89-d0293d8113bb.png">
+
+### 범용레지스터의 종류
+#### EBX
+Data segment(리얼모드, 보호모드에서는 Data segment Selector)의 데이터를 포인팅하는 레지스터
+
+#### ESI(Extended Source Index)
+현재 DS register에 의해 포인팅된 세그먼트 내에 있는 데이터의 인덱스 번호를 저장하고 있는 레지스터
+
 ## Control register
 ### control register란?
 다양한 운영모드를 제어하는 레지스터
