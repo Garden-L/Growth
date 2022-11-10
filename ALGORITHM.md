@@ -76,6 +76,9 @@ for(int i = 1; i < s.size(); i++)
 }
 ```
 
+#### 시간복잡도
+DP처럼 세세하게 구할 수는 없지만 내부 반복문이 logN이고 외부 반복문이 N번 반복되므로 O(NlogN)임을 알 수 있다. 
+
 <br></br>
 ## Dynamic programming
 ### 1. 개념
