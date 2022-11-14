@@ -23,7 +23,9 @@ ES 레지스터는 보조 세그먼트 레지스터로 데이터를 수신하여
 
 #### 플래그 레지스터 종류
 * ZF(Zero Flag) : 단일 비트 플래그로써 산술 연산 결과가 0 인 경우 1로 설정된다. 산술 결과가 0이 아닌 수가 나온다면 리셋 된다. 대표적으로 and, or, xor연산의 결과 값이 0이면 1로 설정된다. 
-
+* CF(Carry Flag) : 덧셈 또는 뺄셈의 경우 범위를 초과하는 경우
+* SF(Sign Flag) : 연산 결과가 음수 일때, 최상위 비트가 1로 설정된 경우(2의 보수)
+* 
 
 ## General-Purpose Register(범용 레지스터)
 ### 범용 레지스터란?
@@ -67,10 +69,33 @@ ES 레지스터는 보조 세그먼트 레지스터로 데이터를 수신하여
 
 <br></br>
 ## Intel Instruction set
-### JMP
+### ■ JMP
 특정 주소로 분기시키는 명령어
 ```assembly
 JMP 0x1:0x5 ; CS 레지스터에 0x1을 적재하고, IP(또는 PC) 레지스터에 0x5를 적재한다. 
+```
+
+### ■ CMP dest, source
+두 값을 비교하는 명령어. dest 값에서 source 값을 빼서 0이 나오면(일치) ZF(제로 플래그 레지스터)를 1로 설정한다. 
+
+### ■ JCC
+조건 점프, 특정 조건이 일치하면 점프명령어를 수행한다.
+
+#### JE dest
+Jump if Equal, cmp명령어와 함께 자주 쓰인다. ZF(제로 플래그 레지스터)가 1로 설정되어 있으면 dest로 분기한다.
+```assembly
+cmp 1, 0 ; ZR = 0
+je dest ; ZR=0 이므로 목적지로 분기 못함
+
+cmp 1, 1; ZR=1
+je dest ; ZR=1 이므로 목적지로 분기함
+```
+
+#### JL dest
+Jump if Less, cmp 명령어와 함께 쓰인다. (SF XOR OF)=1 인 경우 dest로 분기한다
+```assembly
+cmp 1, 10 ; SF=1, OF=0 -> SF XOR OF = 1
+jl dest ; 목적지로 분기가능
 ```
 
 ## ARM Instruction set
