@@ -452,6 +452,7 @@ int main(void)
 #### 다익스트라 알고리즘
 그리디한 방법으로 동작되는 알고리즘이다. 방문하지 않은 정점 중에서 최단 거리로 연결된 정점을 선택한다. 최단 거리를 만들기 위해서는 dp의 개념도 사용된다. 한 정점의 최단거리는 최소로 연결된 인접 정점의 가중치 + 최소로 연결된 인접 정점까지 최단거리이다. 이것이 DP개념이다. DP의 개념도 사용하지만 그리디 알고리즘이라고 불리는 이유는 명확하게 "방문하지 않은 정점 중에서 최단 거리로 연결된 정점"을 선택하기 때문이다. 현재 정점에서 최단거리가 아니다는 것을 기억하자. 현재 정점에서 최단거리는 다익스트라와 비슷한 프림 알고리즘에서 사용한다.
 
+
 <br></br>
 ## ■ 다익스트라 알고리즘(Dijkstra Algorithm)
 ### ■ 개념
@@ -459,29 +460,275 @@ int main(void)
 
 ### ■ 음의 가중치가 있는 그래프에서 사용할 수 없는 이유?
 #### 무한 싸이클
-음의 가중치가 있는 그래프에서 만약 음의 싸이클이 존재하면 경로가 무한대로 가기 때문에 다익스트라 알고리즘을 적용할 수 없다. 아래 예에서 우선순위 큐를 사용하지 않는 알고리즘과 사용하는 알고리즘을 비교해서 보자. 무한 싸이클 문제는 어떤 경우라도 올바른 경로를 구할 수 없다.
-<p align="center">![image](https://user-images.githubusercontent.com/56042451/202151493-18f28c67-d799-4f80-863e-8ac44a77588b.png)</p>
+음의 가중치가 있는 그래프에서 만약 음의 싸이클이 존재하면 경로가 무한대로 가기 때문에 다익스트라 알고리즘을 적용할 수 없다. 아래 예에서 우선순위 큐를 사용하지 않는 알고리즘과 사용하는 알고리즘을 비교해서 보자. 무한 싸이클 문제는 어떤 경우라도 올바른 경로를 구할 수 없다.  
+<p align="center"><img width="300" alt="image" src="https://user-images.githubusercontent.com/56042451/202151493-18f28c67-d799-4f80-863e-8ac44a77588b.png"></p>
+
 1. 우선순위 큐를 사용하지 않는 다익스트라 알고리즘 : A가 시작점이라고 하자 그러면 B C는 각 -1로 설정되고 B를 방문하면 A는 -1 C는 -2로 설정될 것이다. C를 방문하면 A는 -2, B는 -2, D는 -8로 되므 우선순위 큐를 사용하지 않는 다익스트라 알고리즘은 무한 루프에는 빠지지 않지만 잘못된 경로를 반환한다. 
-2. 우선순위 큐를 사용하는 재방문 가능한 다익스트라 알고리즘 : A가 시작점이라 할때 B(-1), C(-1)을 큐에 담고, B를 pop했을 때 C(-2), A(-1)이 push될 것이다. 그리고 C(-2)가 호출되고 B(-2), A(-2), D(98)이 푸쉬된다. 이전에 푸쉬했던 것 보다 계속적으로 작은 경로가 생겨버리기 때문에 우선순위 큐를 사용하는 다익스트라 알고리즘은 무한 루프에 빠지게 된다.
+2. 우선순위 큐를 사용하는 재방문 가능한 다익스트라 알고리즘 : A가 시작점이라 할때 B(-1), C(-1)을 큐에 담고, B를 pop했을 때 C(-2), A(-1)이 push될 것이다. 그리고 C(-2)가 호출되고 B(-2), A(-2), D(98)이 푸쉬된다. 이전에 푸쉬했던 것 보다 계속적으로 작은 경로가 생겨버리기 때문에 우선순위 큐를 사용하는 다익스트라 알고리즘은 무한 루프에 빠지게 된다. 
+
+* 우선순위 큐를 사용하는 다익스트라 알고리즘에서 방문처리에 관한 특별한 이야기가 없으면 전통적인 다익스트라 알고리즘은 방문한 정점은 재방문하지 않기 때문에 재방문이 없는 것으로 간주한다. 우선순위 큐 다익스트라 알고리즘 = 우선순위큐 + 재방문 없음 = 전통적인 다익스트라 알고리즘
 
 #### 잘못된 경로
-![image](https://user-images.githubusercontent.com/56042451/202156948-03de35bf-4f96-4bd3-bd07-3c973261caea.png)
+<p align="center"><img width="300" alt="image" src="https://user-images.githubusercontent.com/56042451/202156948-03de35bf-4f96-4bd3-bd07-3c973261caea.png"></p>
+
 1. 우선순위 큐를 사용하지 않는 방법에서는 A에서 B(5), C(6)를 업데이트하고 그 다음은 B를 방문하고 끝이 나게 된다. C는 방문할 필요가 없다. 최단경로 = 인접한 노드의 최단경로 + 가중치이기 때문에 마지막 노드는 방문할 필요성이 없다. 즉 전체 정점의 개수 - 1만큼만 반복하면 된다. 그렇기 때문에 B는 업데이트 되지 못하고 끝나게 된다. 설령 B가 업데이트 되더라고 만약 B에 가중치 7인 정점 D가 달렸다면(B->D) B가 C에 의해 업데이트 되더라도 D가 업데이트 되지 않을 것이다.
-2. 우선순위 큐 + 재방문이 허용된다면 위 예제에서 싸이클이 존재하지 않기 때문에 구할 수 있다. 싸이클이 있다면 무한대에 빠지기 때문에 구할 수 없다.
+2. 우선순위 큐 + 재방문이 허용된다면 위 예제에서 싸이클이 존재하지 않기 때문에 구할 수 있다. 싸이클이 있다면 무한 루프에 빠지거나 정확한 정답이 계산되지 않는다. 
 
 ### ■ 다익스트라 구현 방법 1, 우선순위 큐를 사용하지 않는 방법
-우선순위 큐를 사용하지 않는 전통적인 다익스트라 알고리즘은 가장 가까운 거리의 노드를 찾고 연결된 노드들의 최단 거리를 갱신한다. 
+우선순위 큐를 사용하지 않는 전통적인 다익스트라 알고리즘은 가장 가까운 거리의 노드를 찾고 연결된 노드들의 최단 거리를 갱신한다. 음의 가중치가 주어질 경우 제대로 답을 도출 할 수 없다.
+```c++
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits.h>
 
+//방문하지 않은 정점 중 최단 경로의 정점을 찾는다.
+int find(std::vector<int>& dist, std::vector<bool>& visited)
+{
+	int minDist = INT_MAX;
+	int retV = 0;
+	for(int i = 1; i < dist.size(); i++)
+	{
+		if(!visited[i] && dist[i] < minDist )
+		{
+			minDist = dist[i];
+			retV = i;
+		}
+	}
+
+	return retV;
+}
+
+int solution(std::vector<std::vector<int>>& matrix, int start, int end)
+{
+	int V = matrix.size() - 1; // 정점이 1부터 시작하기 때문에 매트릭스크기는 정점 수보다 1개가 많다.
+	std::vector<int> dist(matrix.size(), INT_MAX);
+	std::vector<bool> visited(matrix.size(), false);
+
+	dist[start] = 0;
+
+	for(int i = 0; i < V - 1; i++) // 마지막 정점은 방문하지 않아도 최단경로가 구해진다.
+	{
+		visited[start] = true;
+		for(int toV = 1; toV < matrix.size(); toV++)
+		{
+			int distance = dist[start] + matrix[start][toV];
+			if(matrix[start][toV] != INT_MAX && !visited[toV])
+			{
+				if(distance < dist[toV])
+				{
+					dist[toV] = distance;
+				}
+			}
+		}
+
+		start = find(dist, visited);
+	}
+
+	return dist[end];
+}
+
+int main(void)
+{
+	int v, e;
+	std::cin >> v; // V
+	std::cin >> e; // E
+
+	std::vector<std::vector<int>> matrix(v + 1, std::vector<int>(v + 1, INT_MAX));
+
+	for(int i = 0; i < e; i++)
+	{
+		int v1, v2, w;
+		std::cin >> v1 >> v2 >> w;
+
+		matrix[v1][v2] = std::min(matrix[v1][v2],w);
+	}
+
+	int start, end;
+	std::cin >> start >> end;
+
+	std::cout << solution(matrix, start, end);
+}
+```
 ### ■ 다익스트라 구현 방법 2, 우선순위 큐 사용 재방문 하지 않는 방법
-우선순위큐를 사용하여 전통적인 다익스트라 알고리즘의 시간복잡도를 O(NlogV)로 만든다.
+우선순위큐를 사용하여 전통적인 다익스트라 알고리즘의 시간복잡도를 O(ElogV)로 만든다.
+```c++
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits.h>
+#include <set>
+
+int solution(std::vector<std::vector<int>>& matrix, int start, int end)
+{
+	std::vector<int> dist(matrix.size(), INT_MAX);
+
+	std::priority_queue<std::pair<int,int>,std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
+	std::set<int> Visited;
+
+	pq.push({0, start});
+	dist[start] = 0;
+	
+	while(!pq.empty())
+	{
+		std::pair<int,int> cur = pq.top();
+		pq.pop();
+		
+		Visited.insert(start); // 방문처리
+
+		for(int toV = 1; toV < matrix.size(); toV++)
+		{
+			if (Visited.find(toV) != Visited.end()) continue;
+
+			if((matrix[cur.second][toV] != INT_MAX)&& (cur.first + matrix[cur.second][toV] < dist[toV]))
+			{
+				dist[toV] = cur.first + matrix[cur.second][toV];
+				pq.push({dist[toV], toV});
+			}
+		}
+	}
+
+	return dist[end];
+}
+
+int main(void)
+{
+	int v, e;
+	std::cin >> v; // V
+	std::cin >> e; // E
+
+	std::vector<std::vector<int>> matrix(v + 1, std::vector<int>(v + 1, INT_MAX));
+
+	for(int i = 0; i < e; i++)
+	{
+		int v1, v2, w;
+		std::cin >> v1 >> v2 >> w;
+
+		matrix[v1][v2] = std::min(matrix[v1][v2],w);
+	}
+
+	int start, end;
+	std::cin >> start >> end;
+
+	std::cout << solution(matrix, start, end);
+}
+
 ### ■ 다익스트라 구현 방법 3, 우선순위 큐 사용 재방문 가능한 방법
 한 번 방문한 노드를 다시 우선순위 큐에 삽입하는 것이 가능한 방법은 음의 가중치를 갖는 그래프의 최단 거리를 계산할 수 있다. 단 음의 가중치를 갖는 싸이클이 존재하면 구할 수 없다. 왜냐하면 음의 무한대로 가중치가 증가하기 때문이다. 한 번 방문한 노드를 재방문하는 것은 전통적인 다익스트라 알고리즘에 부합하지 않는다.
+```c++
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <limits.h>
+
+int solution(std::vector<std::vector<int>>& matrix, int start, int end)
+{
+	std::vector<int> dist(matrix.size(), INT_MAX);
+
+	std::priority_queue<std::pair<int,int>,std::vector<std::pair<int,int>>, std::greater<std::pair<int,int>>> pq;
+
+	pq.push({0, start});
+	dist[start] = 0;
+
+	while(!pq.empty())
+	{
+		std::pair<int,int> cur = pq.top();
+		pq.pop();
+
+		if(dist[cur.second] < cur.first) continue;
+
+		for(int toV = 1; toV < matrix.size(); toV++)
+		{
+			if((matrix[cur.second][toV] != INT_MAX)&& (cur.first + matrix[cur.second][toV] < dist[toV]))
+			{
+				dist[toV] = cur.first + matrix[cur.second][toV];
+				pq.push({dist[toV], toV});
+			}
+		}
+	}
+
+	return dist[end];
+}
+
+int main(void)
+{
+	int v, e;
+	std::cin >> v; // V
+	std::cin >> e; // E
+
+	std::vector<std::vector<int>> matrix(v + 1, std::vector<int>(v + 1, INT_MAX));
+
+	for(int i = 0; i < e; i++)
+	{
+		int v1, v2, w;
+		std::cin >> v1 >> v2 >> w;
+
+		matrix[v1][v2] = std::min(matrix[v1][v2],w);
+	}
+
+	int start, end;
+	std::cin >> start >> end;
+
+	std::cout << solution(matrix, start, end);
+}
+```
+
+```
+다양한 인풋
+
+
+첫번째 라인 정점 수
+두번째 라인 간선 수
+마지막 라인 출발지 노드, 목적지 노드
+
+음의 싸이클이 존재하지 않는 그래프는 재방문 가능한 다익스트라 알고리즘에서 구할 수 있다.
+3
+3
+1 2 5
+1 3 6
+3 2 -3 
+1 2
+
+음의 싸이클이 존재하는 그래프는 재방문 가능한 다익스트라 알고리즘에서 구할 수 없다.
+-무한루프에 빠지는 케이스
+3
+3
+1 2 -5
+3 1 2
+2 3 1 
+3 2
+
+-무한루프에 빠지지 않으나 정확한 답을 산출 못함
+3
+3
+1 2 -5
+3 1 2
+2 3 10
+3 2
+```
+
+### ■ 시간복잡도
+#### 우선순위 큐를 사용하지 않는 방법
+
+#### 우선순위 큐를 사용하면서 재방문 하지 않는 방법
+대부분 우선순위 큐를 사용해서 구현하면 재방문 가능하게 구현할 것이다. 하지만 본래 다익스트라 알고리즘은 방문 완료한 정점은 재방문하지 않는 것을 원칙으로 한다.
+<p align="center"><img width="604" alt="image" src="https://user-images.githubusercontent.com/56042451/202337098-a86c2602-ef47-4426-8a22-62eb584b6673.png"></p>
+
+1. dist 배열을 초기화 하는데 걸리는 시간 : O(V)
+2. 정점의 방문 횟수는 모든 간선의 개수와 같다 : O(E)
+3. 큐에 저장될 수 있는 최대 원소는 정점의 수 이다 : O(V)
+4. 큐가 이진힙으로 구현되어있으면 원소를 넣을 때 걸리는 시간 O(logV), 원소를 빼고나서 트리 조정 시간 O(logV)
+
+* 전체 시간 복잡도 = 배열 초기화 시간 + 정점을 큐에서 가져오는 시간(POP연산 후 힙 조정 logV) + 각 정점에서 인접한 정점 거리 계산시간(PUSH작업 logV)
+  = O(N) + O(VlogV) + O(ElogV) = O((V+E)logV) = O(ElogV)
+* O(ElogV)가 될 수 있는 이유는 모든 그래프에 대해서 E >= V - 1 때문에 V를 무시할 수 있다.
+
+
 <br></br>
 ## 최소 스패닝 트리
 ### 1. 개념
 스패닝 트리란 그래프에서 속한 간선을 이용하여 모든 정점을 포함하는 트리이다. 간선의 가중치를 최소로 하여 스패닝 트리를 구성하면 최소 스패닝 트리(Minimum spanning tree)라고 한다. 하나의 그래프에 스패닝 트리는 여러개 나올 수 있다. 최소비용의 연결과 최단거리는 다르다. 
-![image](https://user-images.githubusercontent.com/56042451/193393865-acdc17f4-9f6e-48a0-bb2d-21a5a3f3a859.png)
-
+<p align="center"><img width="500" alt="image" src="https://user-images.githubusercontent.com/56042451/193393865-acdc17f4-9f6e-48a0-bb2d-21a5a3f3a859.png"></p>
 ### 2. 크루스칼 알고리즘 O(ElogE)
 크루스칼 알고리즘으 greey algorithm + disjoint set 을 이용한 방법이다. edge의 가중치가 최소인 경로부터 연결하면 최소 가중치로 신장트리를 구성할 수 있다. 
 
