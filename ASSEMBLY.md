@@ -69,7 +69,21 @@ ES 레지스터는 보조 세그먼트 레지스터로 데이터를 수신하여
 
 <br></br>
 ## Intel Instruction set
+### MUL A
+A와 EAX 레지스터의 값과 곱하여 EAX레지스터에 저장한다.
+```assembly
+MUL si ; si*ax
+```
 ### ■ JMP
+#### JMP A
+특정 주소로 분기시키는 명령어, EIP 레지스터에 분기할 주소를 담는다
+```assembly
+jmp A 
+
+; 동작과정
+mov eip, A;
+```
+#### JMP A:offset
 특정 주소로 분기시키는 명령어
 ```assembly
 JMP 0x1:0x5 ; CS 레지스터에 0x1을 적재하고, IP(또는 PC) 레지스터에 0x5를 적재한다. 
@@ -98,6 +112,21 @@ cmp 1, 10 ; SF=1, OF=0 -> SF XOR OF = 1
 jl dest ; 목적지로 분기가능
 ```
 
+
+### ■ call
+함수를 호출할 때 쓰이는 명령어, call 명령어로 함수를 호출하면 현재 스택 공간의 다음에 실행해야할 주소값을 적어 두고 함수를 호출하게 된다.
+```assembly
+call func 
+
+//실제 작동과정
+push EIP  ; 다음에 실행될 명령어 주소를 현재 스택에 담는다
+jmp func  ; 
+call FUNC ; EIP = FUNC
+```
+
+
+
+<br></br>
 ## ARM Instruction set
 ### STR
 store 명령으로 레지스터의 값을 메모리에 적재하는 것을 의미한다.
