@@ -161,3 +161,102 @@ func<int&&>(10);
 ```
 그럼 위와 같은 Rvalue reference같은 경우에서 레퍼런스 충돌을 보면 int &&A, int& &&A, int&& && A, 경우인데 위에서 설명한것과 같이 하나의 lvalue reference가 있다면 무조건 lvalue reference으로 바꾸기 때문에 2번 test만 불가능하게된다.
 
+
+## std::vector
+
+### ■ 원소 지우기
+벡터는 콘테이너에 있는 원소를 삭제할 수 있다. 원소를 삭제하는 특정 원소를 지정해서 삭제하거나 특정 범위를 지정하여 범위 전체를 삭제할 수 있다. vector 내의 원소를 삭제하기 위해서 erase 메소드를 사용해서 삭제 가능하다. 원소를 삭제하면서 중요해야할 점은 반복문을 쓰면서 원소를 제거하는 경우이다. 벡터는 원소를 삭제할 시 뒤에 원소를 앞으로 당겨오는 것으로 내부를 처리한다. 인덱스를 사용하면서 원소를 제거하면 제대로 제거가 안되거나 배열의 사이즈 크기를 넘어서 잘못된 공간을 불러올 수 있다. 내부적으로 에러로 처리하게 된다.
+
+#### 인덱스로 반복문을 돌리는 경우 - 제거하려는 원소가 제대로 제거가 안되는 경우
+```c++
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main(void)
+{
+    vector<int> list;
+
+    for(int i = 0; i < 50; i++)
+        list.push_back(1); // 1만 삽입
+
+    
+    for(int i = 0; i < list.size(); i++)
+        if(list[i] == 1) // 모든 1을 제거하기
+        {
+            list.erase(list.begin() + i);
+        }
+
+    for(int i = 0; i < list.size(); i++) 
+        cout << list[i] << ' '; // 모든 1이 제거가 안된다.
+
+}
+
+//출력 : 모든 1이 삭제가 안된다.
+//1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+```
+위의 코드는 작성자가 모든 1을 제거할 목적으로 작성한 코드지만 출력결과를 보니 모든 1은 제거가 되지 않았다. 원소를 삭제 할때마다 벡터는 뒤 원소를 앞으로 당겨오지만 반복문의 인덱스 번호는 증가되므로 제대로 삭제를 할 수가 없다.
+
+#### 인덱스로 반복문을 돌리는 경우 - 잘못된 공간 참조로 인한 오류가 발생하는 경우
+```c++
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main(void)
+{
+    vector<int> list;
+
+    for(int i = 0; i < 50; i++)
+        list.push_back(1); // 1만 삽입
+
+    size_t size = list.size();
+    for(int i = 0; i < size; i++)
+        if(list[i] == 1) // 모든 1을 제거하기
+        {
+            list.erase(list.begin() + i);
+        }
+
+    for(int i = 0; i < list.size(); i++) 
+        cout << list[i] << ' '; // 모든 1이 제거가 안된다.
+}
+//출력 : 잘못된 공간 참조
+//segmentation fault
+```
+앞에 코드와 유사하지만 이번엔 반복문을 돌면서 벡터의 사이즈를 계속 확인하는 것이아닌 초기 벡터의 사이즈를 변수에 저장해 놓고 사용하는 경우이다. 이러면 원소가 삭제 될때마다 벡터의 크기가 줄어들어 벡터내부 size 변수도 줄어들게 된다. 하지만 인덱스번호는 계속 증가하여 벡터의 사이즈보다 큰 공간을 참조하려하려 하기 때문 segmentation fault 오류를 발생한다. 
+
+#### erase를 잘 사용하여 올바르게 원소를 제거하자!
+erase 메소드는 반환값으로 재조정된 다음 원소의 반복자를 반환하게 된다. 그렇기 때문에 반복문을 사용하여 원소를 삭제하기 위해서는 반복자를 이용하여 삭제해야한다. 아래에 코드가 올바르게 삭제하는 방법의 코드이다.
+```c++
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main(void)
+{
+    vector<int> list;
+
+    for(int i = 0; i < 50; i++)
+        list.push_back(1); // 1만 삽입
+
+    std::vector<int>::iterator iter = list.begin();
+    while(iter != list.end())
+    {
+        if(*iter == 1)
+            iter = list.erase(iter); // 삭제할 원소라면 삭제 이후 재조정된 다음 원소의 반복자
+        else
+            iter++; // 삭제할 원소가 아니면 다음 원소의 반복자
+    }
+    for(int i = 0; i < list.size(); i++) 
+        cout << list[i] << ' '; // 모든 1이 제거가 안된다.
+}
+```
+
+#### std::vector<T,Allocate>::erase 메소드
+earse 메소드는 두 가지 형태를 지원한다. 범위를 지정해서 삭제하거나 원소의 반복자 위치로 삭제할 수 있다. 삭제 후에는 새로 업데이트된 다음 원소의 반복자를 반환한다.
+
+
+
