@@ -31,3 +31,41 @@ const car = require('./car.js')
 console.log(car) // output { car : "benz"}
 ```
 
+<br></br>
+# sequalize
+
+## 시퀄라이즈
+### ■ 시퀄라이즈란?
+Postgres, Mysql, MariaDB, SQLite, Microsoft SQL Server, Amazon Redshift, Snowflake's Data cloude 데이터베이스 프로그램들을 위한 Node.js기반 ORM 도구이다. 
+
+### ■ 시퀄라이즈 설치
+#### npm install --save sequlize
+시퀄라이즈 패키지를 설치한다.
+
+#### npm install --save mysql2
+mysql과 연결하기 위한 드라이브를 설치해야한다.
+
+### ■ 기본설정
+#### npx sequelize init
+시퀄라이즈와 관련된 모든 기본설정을 할 수있다.
+
+
+<br></br>
+## 데이터베이스 연결(Connecting to database)
+### ■ 데이터베이스와 연결하기 위한 sequalize 생성하기
+#### Passing parameters separately (other dialects), Mysql
+Mysql과 연결하기 위한 시퀄라이즈 생성하기
+```js
+// index.js
+const { Sequelize } = require('sequelize'};
+
+const db = {};
+module.exports = db;
+
+// Mysql과 연결하기 위한 시퀄라이즈 객체 생성
+const sequelize = new Sequelize('database', 'username', 'password', { host: 'localhost', dialect:'mysql'});
+
+db.sequelize = sequelize;
+```
+
+
