@@ -4,6 +4,7 @@
 원격 저장소의 브랜치 삭제. 원격 저장소의 헤더가 현재 브랜치를 가르키고 있을 경우 삭제불가능하다.
 
 
+<br></br>
 ## .gitignore 
 ### ■ gitignore란?
 의도적으로 git에 버전관리를 하지 말야할 파일은 .gitignore에 기술하면 untracked 시킬 수 있다. 하지만 이미 tracked된 파일은 .gitignore에 작성하더라도 무시되지 않기 때문에 파일을 추적하기 전에 무시해야한다. tracked 되어도 무시시킬 방법이 없는 것은 아니다!
@@ -27,3 +28,10 @@ $ touch .gitignore
 # node_modules와 하위 모든 파일 및 폴더 무시
 node_modules/
 ```
+
+
+<br></br>
+# git-flow
+
+## Branch 관리
+### ■ master branch
