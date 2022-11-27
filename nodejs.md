@@ -32,6 +32,7 @@ console.log(car) // output { car : "benz"}
 ```
 
 <br></br>
+<br></br>
 # sequalize
 
 ## 시퀄라이즈
@@ -68,4 +69,98 @@ const sequelize = new Sequelize('database', 'username', 'password', { host: 'loc
 db.sequelize = sequelize;
 ```
 
+## Model 
+### ■ 모델 정의
+시퀄라이즈에서는 모델을 정의하기 위한 두 가지 방법을 지원한다. 객체 이름은 보통 단수(User), 테이블 이름은 보통 복수(Users)로 정한다.
 
+#### sequelize.define 메소드
+
+#### 모델 클래스의 확장
+sequelize에는 모델 클래스가 정의되어있다. 이 클래스를 상속 받아 모델을 만들 수 있다. seqelize.define 메소드는 사실 Model.init의 함수를 호출하여 모델을 구축한다. Model.init 메소드는 static으로 선언되어있어 인스턴스를 만들지 않아도 호출할 수 있다. 모델 클래스에서 중요한 점은 define 메소드는 시퀄라이즈 객체를 생성하여 자동으로 객체와 바인딩하지만 모델을 상속받은 클래스는 데이터베이스와 연결해야할 인스턴스를 지정해야한다.
+```js
+const { Sequelize, DataTypes, Model } = require('sequelize');
+const sequelize = new Sequelize('sqlite::memory:');
+
+class User extends Model {}
+
+User.init({
+  // 모델의 속성(열)들을 정의한다.
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  lastName: {
+    type: DataTypes.STRING
+    // allowNull defaults to true
+  }
+}, {
+  // 모델의 옵션으로 자세한건 모델 옵션을 참조하세요.
+  sequelize, // 데이터 베이스와 연결하기 위해 데이터베이스와 연결시킨 인스턴스가 필요하다.
+  modelName: 'User' // 모델의 이름을 설정한다. 
+});
+
+// the defined model is the class itself
+console.log(User === sequelize.models.User); // true
+```
+
+### ■ 모델의 옵션
+시퀄라이즈는 모델을 생성할 때 여러 옵션을 추가할 수 있다.
+
+#### 테이블 이름
+테이블 이름을 명시하지 않으면 모델 이름을 시퀄라이즈가 알아서 복수형으로 변경하여 테이블 이름을 설정한다. 모델이름이 person 이라면 people로 자동으로 복수형으로 변경하여 테이블 이름을 설정한다.
+```js
+User.init({
+}, {
+ sequelize,
+ tableName : "Users",
+});
+```
+
+#### 타임 스탬프
+시퀄라이즈는 자동으로 모든 모델에 createAt, updateAt 열을 추가한다. createAt은 최초 레코드가 생성될 때 자동으로 입력되며, updateAt은 해당 레코드가 변경되면 마지막으로 변경된 날짜 및 시간을 입력한다. 만약 타임스탬프가 필요없다면 명시적으로 사용안함을 표시해야한다.
+```js
+User.init({
+}, {
+ sequelize,
+ timestamps: false, //타임 스탬프 사용한함.
+});
+```
+만약 createAt 또는 updateAt 둘 중 하나는 사용해야한다면 각각 따로 처리해야한다.
+```js
+User.init({
+}, {
+ sequelize,
+ timestamp: true, // 타임스탬프 사용표시
+ createAt: false, // 타임스탬프 중 creatAt은 사용안함
+ updateAt: 'updateTimestamp' // updateAt은 사용하는데 열 이름을 updateTimestamp로 변경
+});
+```
+
+### ■ DataTypes
+컬럼을 정의하기 위해 시퀄라이즈는 데이터 타입들이 내장되어 있다. 
+
+#### import DataTypes
+내장된 데이터 타입에 접근하기 위해 DataTypes를 import시켜야한다.
+```js
+const { DataTypes } = require('sequelize');
+```
+
+#### 문자열
+```js
+DataTypes.STRING         // VARCHAR(255)
+DataTypes.STRING(1234)   // VARCHAR(1234)
+```
+
+#### 숫자
+```js
+DataTypes.INTEGER         // INTEGER
+DataTypes.BIGINT          // BIGINT
+
+DataTypes.INTEGER.UNSIGNED    // Mysql, Maria DB
+```
+
+#### 날짜
+```js
+DataTypes.DATE            // sqlite, mysql의 DATETIME
+DataTypes.DATEONLY        // 날짜만 설정
+```
