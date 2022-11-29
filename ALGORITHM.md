@@ -1160,6 +1160,25 @@ S의 0~3번 인덱스까지 전체 일치한다. 이후 계속 비교를 위해 
 ```
 후위표기법도 전위표기법처럼 계산하기가 복잡하다. 4 3*=12, 2 2/=1, 12 5+=17, 17 1+=18 이렇게 계산하면 후위표현식의 답을 도출 할 수있다.
 
+## 폴리오미노(Polyomino)
+### ■ 폴리오미오란?
+정사각형을 겹치지 않고 각 변끼리 연결되어 있는 도형을 의미한다. 연결되어 있는 정사각형의 수에 따라 모노미노, 도미노, 트리오미노, 테트로미노 등으로 불린다.
+
+### ■ 테트로미노(Tetromino)
+테트리스 시리즈에 나오는 도형으로 총 5가지의 종류가 있다. 
+<p align="center"><img width="264" alt="image" src="https://user-images.githubusercontent.com/56042451/204460728-6600407b-2673-4a54-9cf7-1f7ce48143a2.png"> </p>
+
+#### 완전 탐색으로 도형을 만들 수 있다?
+테트로미노 4개 도형은 완전탐색 + 백트래킹을 이용하여 도형을 구성할 수 있다. 
+<p align="center"><img width="235" alt="image" src="https://user-images.githubusercontent.com/56042451/204462815-33567ae7-c84b-47de-8d82-760552d444ae.png"></p>
+<p align="center"><img width="154" alt="image" src="https://user-images.githubusercontent.com/56042451/204462845-db7fa9ff-d588-45c3-a3c3-d3e940373ae2.png"></p>
+<p align="center"><img width="240" alt="image" src="https://user-images.githubusercontent.com/56042451/204462880-1ef3b35d-6edd-4b20-b949-ecc36ad1f561.png"></p>
+<p align="center"><img width="308" alt="image" src="https://user-images.githubusercontent.com/56042451/204462918-6f553838-e432-4ca3-9b7b-27170a71055a.png"></p>
+한 점에서 시작해서 깊이가 4번 이면 모든 도형을 구성할 수 있다. 
+단 ㅗ 모양은 한 점에서 시작하여 구성할 수 없기 때문에 따로 처리해야한다.
+<p align="center"><img width="347" alt="image" src="https://user-images.githubusercontent.com/56042451/204463139-9865634b-8903-4aa5-ab46-e13d709022e9.png"></p>
+
+
 <br></br>
 ## 비트연산
 ### ■ 개념
