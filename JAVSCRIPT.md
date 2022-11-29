@@ -346,12 +346,36 @@ JSON은 자바스크립트의 Object 기반으로 작동하기 때문에 Object�
   ```javascript
   jsn["homeTown"]
   ```
+  
+  
+<br></br>
 ## this
-자바스크립트에서 this는 동적바인딩된다.
+### ■ this란?
+일반적으로 C++, Java에서 this는 정적으로 참조된다. 정적으로 이미 정해 질 수 있는 이유는 자신을 가리키는 키워드이기 때문이다. 아무나 this의 의미를 변경할 수 없는 것이다. 하지만 자바스크립트에서 this는 동적으로 바인딩 된다. 즉 this의 의미가 상황에 따라 달라질 수 있다는 의미이다. 자바에서는 this를 클래스 내에서 쓸 수 있지만 자바스크립트는 모든 것이 객체이기 때문에 어디서든 사용이 가능하다. 하지만 함수에서 this는 사용에 따라 의미가 달라질 수 있기 때문에 유의해야한다. 함수, 클래스, 글로벌 위치에 따라 달라진다.
 
-1. 내부함수내에서는 this가 전역객체이다
-2. 객체를 통해 함수가 호출된다면 호출한 객체가 this이다.
-3. 함수객체가 가지고있는 call, apply, bind를 사용하여 명시적으로 바인딩 할수 있다.
+### ■ 함수 문맥에서의 this
+함수에서 this는 한 객체를 가리키고 있는데 일반적으로 자신을 호출한 객체를 가리킨다. C++, Java관점에서 아래 코드의 getThis의 this를 보면 global(nodejs)에서 정의된 함수이므로 this가 global을 가리키는 것이 일반적일 것이다. 하지만 JS에서는 동적으로 가리키므로 이 함수 객체가 어디에 소속되어 호출되는지에 따라 다르게 this가 참조하는 것이 다르게 된다. 첫번째 콘솔로그를 보면 global 객체를 출력하지만 두번째, 세번째를 보면 getThis가 global에 정의 되었음에도 불구하고 obj1, obj2에 소속시키고 obj1.getThis, obj2.getThis로 호출하여 결과값을 보면 obj1, obj2를 출력하는 것을 볼 수있다. 일반적으로 함수문맥에서 this는 어느 객체가 호출했는지에 따라 결정된다.
+```js
+function getThis() {
+  return this;
+}
+
+const obj1 = { name: "obj1" };
+const obj2 = { name: "obj2" };
+
+obj1.getThis = getThis;
+obj2.getThis = getThis;
+
+consol.log(getThis()) // global 객체
+console.log(obj1.getThis()); // { name: 'obj1', getThis: [Function: getThis] }
+console.log(obj2.getThis()); // { name: 'obj2', getThis: [Function: getThis] }
+```
+
+#### 내부 함수에서의 this
+내부함수에서 this는 무조건 전역 객체(window, global)을 가리킨다.
+
+#### 콜백 함수에서의 this
+콜백함수에서 this는 무조건 전역 객체(window, global)을 가리킨다.
 
 ## Object
 
