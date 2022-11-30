@@ -594,3 +594,8 @@ def mainview(request):
 일단 mainview에서 사용된 login_required 함수는 실은 실질적인 작업보다는 user_passes_test 인자를 세팅 후 user_passes_test 함수가 가진 데코레이터를 반환해주는 것 뿐이다. 일단 login_required 함수에 들어가서 actual_decorator를 따라가보면 user_passes함수가 보이고 이 함수는 데코레이터를 두개 반환하는 것을 볼수 있다(decorator, \_\_wrapper). 그럼 총 2번 알을 낳고 1번 실행해야한 다는 것을 알 수 있다. 일단 acture_decorator가 user_passes_test를 호출하므로써 알을 한번 낳았다. 그리고 if function을 들어가면 한번 호출하므로써 2번 알을 낳고 마지막은 사용하므로써 실행 시켜야한다. 하지만 우리는 뷰에 대한 함수를 정의했지 사용은 어디서 하는 걸까? 바로 url 호출이 들어올 시 실행되는 path(re_path, url)함수 이다. 이로써 총 2번의 알 낳기 작업과 1번의 실행작업이 완료되었다. 
 
 
+<br></br>
+<br></br>
+# PANDAS
+<br><br>
+##
