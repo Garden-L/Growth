@@ -103,6 +103,32 @@ User.init({
 console.log(User === sequelize.models.User); // true
 ```
 
+### ■ 모델 필드의 옵션
+#### 주키(Primary Key)
+모델 필드에 primaryKey: true를 설정하면 해당 필드를 주키로 설정한다. 여러 필드에 primaryKey: true를 하면 다중키가 설정된다.
+```js
+// uuid 필드를 주키로 설정.
+class Collection extends Model {}
+Collection.init({
+  uuid: {
+    type: DataTypes.UUID,
+    primaryKey: true
+    autoIncrement: true //데이터 입력시 따로 입력하지 않아도 자동으로 값을 증가하도록한다.(DBMS 마다 차이가 있음)
+  }
+}, { sequelize });
+```
+
+시퀄라이즈는 정의한 모델의 primary key가 없으면 id 필드를 자동으로 만들어 생성한다. id필드를 자동생성하지 않기 위해서는 모델을 생성한다음 Model.removeAttribute('id')를 이용하여 자동생성된 주키를 제거해야한다. 
+``` js
+// 자동생성된 주키(id필드) 제거하기.
+class Collection extends Model {}
+Collection.init({
+  uuid: {
+    type: DataTypes.UUID, // 주키를 따로 설정하지 않아 자동으로 id필드가 생기고 주키로 설정된다.
+  }
+}, { sequelize });
+Collection.removeAttribute('id');
+```
 ### ■ 모델의 옵션
 시퀄라이즈는 모델을 생성할 때 여러 옵션을 추가할 수 있다.
 
