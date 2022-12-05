@@ -222,3 +222,33 @@ DataTypes.INTEGER.UNSIGNED    // Mysql, Maria DB
 DataTypes.DATE            // sqlite, mysql의 DATETIME
 DataTypes.DATEONLY        // 날짜만 설정
 ```
+
+## Association(연관)
+### ■ One-to-One
+1:1 연관을 사용하기 위해 기본적인 개념을 보면 관계형 데이터베이스에서 1:1 연관을 사용하기 위해 외래키를 지정한다. 시퀄라이즈에서는 외래키를 지정하는 편한 메소드를 지원하며, 이 메소드는 추후 ORM 사용을 편리하게 한다. 외래키는 참조받는 테이블은 부모 테이블, 참조하는 테이블은 자식테이블이라고 한다. 외래키는 자식테이블의 새로운 열을 만들던지 아니면 자식테이블의 기존 존재하던 열을 부모 테이블의 특정 열을 참조해야한다.
+
+#### Model.hasOne 메소드
+model.hasOne은 타겟 객체에 외부키를 생성하는 것을 의미한다. 
+```js
+Foo.hasOne(target=Bar);
+```
+* HasOneOptions
+  + SouceKey : 외부키가 참조할 소스 테이블의 열을 의미한다.
+  + foreignKey : 타겟 테이블의 열을 의미한다. 타겟 테이블에서 foreignKey로 지정한 열이 없다면 자동으로 생성한다. 따로 지정하지 않으면 시퀄라이즈에서 자동으로 생성한다.
+
+#### Model.belongsTo 메소드
+model.belongsTo 메소드는 소스 객체에 외부키를 생성하는 것을 의미한다. 
+```js
+Bar.hasOne(target=Foo);
+```
+* belongsToOptions
+  + targetKey : 외부키가 참조할 타겟 테이블의 열을 의미한다.
+  + foreignKey : 외부키로 사용할 소스 테이블의 열을 의미한다. 소스 테이블에 해당 열이 없다면 자동으로 생성한다. 따로 지정하지 않으면 시퀄라이즈에서 자동으로 생성한다.
+
+
+#### hasOne? belongsTo? 하나만 정의하면 되는 것 아닌가?
+hasOne과 belongsTo는 결국 같은 일을 하는 것이 아닌가? 외부키를 생성하는 것을 보면 결국은 같은 일을 하는 것이다. 그럼 왜 둘다 정의하는가? 바로 둘다 특별한 기능이 있기 때문이다.
+
+#### 복합키를 외래키로 설정하는 것이 가능한가?
+시퀄라이즈에서는 복합키를 외래키로 설정하는 것이 불가능하다. 전혀 지원하지 않는다. 
+
