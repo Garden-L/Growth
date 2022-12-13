@@ -136,8 +136,20 @@ mysql> SELECT country, SUM(profit) AS country_profit
 
 #### frame_clause
 
-
-
-
+## 인덱스(INDEX)
+### ■ 다중 컬럼 인덱스 (Multiple-column index)
+##### 다중 열을 인덱스로 지정 했을 경우 최적화 
+다중 열을 인덱스로 지정했을 경우 가장 좌측 열부터 일치 여부를 판단한다.
+```sql
+CREATE TABLE test (
+    id         INT NOT NULL,
+    last_name  CHAR(30) NOT NULL,
+    first_name CHAR(30) NOT NULL,
+    PRIMARY KEY (id),
+    INDEX name (last_name,first_name)
+);
+```
+위의 테스트 테이블은 last_name, first_name 순으로 다중 열 인덱스를 지정했다. WHERE 구문으로 데이터를 조회하였을 시 and 구문으로 last_name 과 first_namd을 연결할텐데 이때 열의 순서는 무조건 last_name, first_name 순으로 조회하여야한다. 만약 first_name을 WHERE절에 먼저 사용한다면 FULL SCAN으로 인덱스를 사용할 수 없다.
+##
 
 
