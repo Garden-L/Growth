@@ -149,7 +149,17 @@ CREATE TABLE test (
     INDEX name (last_name,first_name)
 );
 ```
-위의 테스트 테이블은 last_name, first_name 순으로 다중 열 인덱스를 지정했다. WHERE 구문으로 데이터를 조회하였을 시 and 구문으로 last_name 과 first_namd을 연결할텐데 이때 열의 순서는 무조건 last_name, first_name 순으로 조회하여야한다. 만약 first_name을 WHERE절에 먼저 사용한다면 FULL SCAN으로 인덱스를 사용할 수 없다.
-##
+위의 테스트 테이블은 last_name, first_name 순으로 다중 열 인덱스를 지정했다. WHERE 구문으로 데이터를 조회하였을 시 and 구문으로 last_name 과 first_namd을 연결할텐데 이때 열의 순서는 무조건 last_name, first_name 순으로 조회하여야한다. 만약 first_name을 WHERE절에 먼저 사용한다면 FULL SCAN으로 인덱스를 사용할 수 없다. 또한 순서대로 사용했다고 해도 OR연산자로 인덱스 열을 묶은 경우도 불가능하다.
+```sql
+SELECT * FROM test WHERE first_name='John'; # first_name은 두번째 순서기 때문에 가장 좌측부터 일치한다는 인덱스 원리에 부합
 
-
+SELECT * FROM test
+  WHERE last_name='Jones' OR first_name='John'; # OR 연산자로 다중 열을 지정할 경우 최적화 불가능
+```
+#### 인덱스가 3개라면?
+(col1, col2, col3) 순서대로 인덱스를 지정했을 경우 가능한 경우는 총 4개가지 이다.
+* 인덱스로 검색 가능한 경우
+  + col1=val1 and col2=val2 and col3=val3
+  + col1=val1 and col2=val2
+  + col1
+col1=val1 and col3=val3는 중간에 col2가 없기 때문에 가장 좌측부터 순서대로 지정해야한다는 인덱스 원칙에 부합하기 때문에 불가능하다.
