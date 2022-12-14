@@ -1,6 +1,18 @@
 # 기본은 MYSQL을 바탕으로 합니다.
 
 <br></br>
+## Numeric Data Type
+##### https://dev.mysql.com/doc/refman/8.0/en/numeric-type-syntax.html
+
+
+### ■ BIGINT\[(M)] [UNSIGNED] [ZEROFILL]
+최대 64비트(8바이트)크기의 정수를 저장할 수 있는 숫자 데이터 타입이다. BIGINT는 데이터 타입 중에서 가장 중요하다. 왜냐하면 모든 산술 계산이 BIGINT 타입으로 계산되기 때문이다.
+* 알고 있어야 하는 사실
+ + 모든 산술 계산은 부호 없는 BIGINT(signed bigint)형으로 계산되기 때문에 최대 2^63-1까지 표현되기 때문에 이 수치를 넘어가지 않도록 주의해야한다.
+   -  +, -, * 연산은 모두 BIGINT형으로 계산되므로 최대 표현값을 넘기면 잘못된 결과값을 반환한다.
+ + 문자열 형태로 BIGINT인 열에 값을 삽입할 수 있다. MYSQL에서는 문자열을 BIGINT형으로 변환하여 저장한다.
+
+<br></br>
 ## INSERT
 ### ■ INSERT란?
 INSERT는 이미 존재하고 있는 테이블에 새로운 열(데이터)를 삽입한다. DBMS에서 insert를 사용하기 위해서는 insert 권한이 있어야 한다. 대부분 DBMS 계정에 기본적으로 insert 권한이 부여되어 있다.
