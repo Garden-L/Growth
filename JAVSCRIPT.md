@@ -1,6 +1,22 @@
 # Javascript
 
 <br></br>
+## 연산자
+### ■ Strict equality(===, !==)
+엄격한 동등 연산자로 두 피연산자의 **값과 자료형(타입)** 이 모두 일치하면 여부에 따라 boolean 자료형을 반환한다. 자바스크립트에서는 단순 비교 연산자(==)가 다른 언어보다 관대한 부분이 있어서 되도록 엄격한 비교 연산자를 사용해야한다. 단, +0과 -0은 참으로 반환한다. 수학적으로 크게 구분할 의미가 없기 때문이다.
+
+#### 배열의 index-finding method
+엄격한 동등 연산자로 대표적으로 사용하는 메소드는 배열의 인덱스 파인딩 메소드들이다. 
+* Array.prototype.indexOf()
+* Array.prototype.lastIndexOf()
+* TypedArray.prototype.index()
+* TypedArray.prototype.lastIndexOf()
+
+#### switch-case
+스위치 케이스 문에서도 엄격한 동등 연산자를 사용하기 때문에 타입을 정확히 일치하도록 프로그래밍 해야한다
+
+
+<br></br>
 ## 구조할당분해(Destructuring Assignment)
 ### ■ 구조할당분해란?
 배열의 원소값이나 객체의 프로퍼티를 Unpack하여 새로운 변수에 할당하도록 지원하는 자바스크립트의 문법이다.
