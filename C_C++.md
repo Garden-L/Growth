@@ -24,7 +24,7 @@ C++11부터 추가된 Rvalue reference 때문에 기존의 C, 이전 버전의 C
 
 ### ■ C++11이후 Values
 ####  ⃞ value expression
-<p align="center">![image](https://user-images.githubusercontent.com/56042451/209667694-d0a6cfce-71fe-4e3e-9821-651782129896.png)
+<p align="center"><image src="https://user-images.githubusercontent.com/56042451/209667694-d0a6cfce-71fe-4e3e-9821-651782129896.png"/>
 </p>
 
 ####  ⃞ Lvalue 
