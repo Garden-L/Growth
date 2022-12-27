@@ -259,4 +259,11 @@ int main(void)
 earse 메소드는 두 가지 형태를 지원한다. 범위를 지정해서 삭제하거나 원소의 반복자 위치로 삭제할 수 있다. 삭제 후에는 새로 업데이트된 다음 원소의 반복자를 반환한다.
 
 
+## Algorithm
+### bool std::next_permutation
+해당 배열 또는 컨테이너의 원소를 다음 순열로 정렬한다. 처음 실행하기 위해서는 무조건 오름차순으로 정렬 되어있어야하며 마지막 순열에서서는 첫번재 원소로 변경 후에 false를 반환한다.
 
+
+
+### std::next_permutationㅋㅓㄴ테
+### std::next_permutation
