@@ -42,6 +42,128 @@ gvalue는 단순히 식별자들이 있는 카테고리들을 묶은 것이다. 
 ####  ⃞ rvalue
 이동되는 값들을 카테고리로 묶은 것이다. c++도 lvalue가 rvalu될 수 있다. 단 lvalue가 rvalue로 사용되면 값이 복사되니 복사가 필요하지 않는 경우는 이동시켜야한다. 이를 std::move함수가 지원한다.
 
+<br></br>
+## Reference
+### ■ 들어가기전...
+C++만든 아저씨는 똑똑한건지... 아니면 사람을 괴롭게 하려고 만든건지... 공부하면 공부할수록 암담해지는 자신을 보며 레퍼런스를 공부하자! C++의 레퍼런스는 어렵다. But 어느정도 개념만 알면 규칙성이 있으니깐 개념만 잘 파악해도 대부분 깨우칠 수 있다. 특히 용어에 대한 이해가 있다면 레퍼런스 어렵지않다!!!
+
+### ■ 레퍼런스란?
+포인터와 비슷한 개념이다. 하지만 다른 점은 포인터는 다른 변수를 가리키기 위해 4바이트(시스템 마다 다름)정도 변수를 할당할 공간을 확보한다. 하지만 레퍼런스는 공간을 할당하지 않는다. 단지 새로운 변수에 별칭만 붙이는 것이다. 변수인데 공간을 할당하지 않는 것이 가능한가? 가능하다. 컴파일러 수준에서 a와 a의 별명은 b라고 인식시키면 된다. 컴파일러는 당연히 a, b를 문자 그대로의 a,b로 인식하지 않고 같은 주소값이라고 표기할 것이다(추측, 차후확인해봄)
+
+### ■ lvalue reference(lvalue 참조)
+
+#### lvalue
+lvalue참조란 무엇인가? 쉽다 그냥 Lvalue를 참조하는 것이다. Lvalue는 무엇인가? 자세한건 위에서 lvalue를 확인하면 알 수 있지만 보통 변수, 문자열 리터럴 등, 정확히는 식별자(주소 값)가 있고 이동할 수 없는 것들은 모두 lvalue이므로 참조하기 위해서는 lvalue 참조를 사용해야한다. 그런데 c++에서는 흠이 한가지 있다. lvalue 참조에 const가 붙는 경우이다. 자세한건 다음 주제에서 확인하자.
+
+#### const lvalue reference
+const lvalue reference는 조금 특이하다. lvalue만을 가리키진 않는다. rvalue도 가리킬 수 있다. lvalue참조인데 rvalue를 가리킨다고? 사실 const lvalue reference는 무조건 참조대상이 lvalue일 필요는 없다. 자세한건 아래 c++을 만든 아저씨의 말을 보면 안다.
+```
+The initializer for a const T& need not be an lvalue or even of type T. In such cases:
+
+[1] First, implicit type conversion to T is applied if necessary.
+
+[2] Then, the resulting value is placed in a temporary variable of type T.
+
+[3] Finally, this temporary variable is used as the value of the initializer.
+```
+const는 우리가 아는 일반적인 사실은 해당 변수를 변경하지 못하도록 한정하는 것이다. 대부분 매개변수로 값을 변화시키지 못하도록 const를 하는 경우가 많다. 그럼 당연하게 lvalue를 변경 못하게하는 것이 const lvalue reference 아닌가? 맞다. 그러나 이것도 맞고 C++에서 예외적으로 Rvalue도 참조 할 수 있도록 한다. C++ 아저씨 말에 따르면 const lvalue reference는 rvalue 값을 참조하게 되면 암시적으로 lvalue에 대한 임시 변수가 생성되고 rvalue 값으로 초기화 시킨다. 참조한 값은 그래도 const 이기 때문에 변경은 못한다. 아무래도 임시로 생성된 객체다보니 함부로 값을 바꾸는 행위가 시스템에 문제를 초래할 수도 있기 때문에 const lvalue reference가 rvalue도 참조할 수 있도록 만들지 않았을까 추측해본다.
+```c++
+// int형 임시변수가 생성되고 10으로 초기화한다. a는 임시변수를 참조한다.
+const int& a = 10;
+
+// 클래스에서는 Aclass 임시 객체가 생성되고 10으로 초기화한다. a는 임시객체를 참조한다.
+const Aclass a = 10;
+```
+
+### rvalue reference(rvalue 참조)
+모든 rvalue(xvalue, prvalue)를 참조하는 것이다. lvalue참조처럼 딱히 예외 사항은 없다. rvalue 사용에서 중요한 점은 rvalue로 참조한 변수는 lvalue라는 것이다.???? 자세한건 아래코드를 보자.
+```c++
+void func(AClass&& ref){
+  AClass b = ref; // 핵심
+}
+...
+
+func(AClass(10));
+```
+위에 코드에서 AClass(10)은 임시객체이므로 ref가 rvalue 참조하는 것이 자명하다. 이것도 모르면 C++때려...ㅊ ㅓㅓㅓㅓㅓㅓ.... 그럼 AClass b = ref는 복사생성이 일어날까 이동생성이 일어날까? rvalue 참조한 값이니깐 당연 이동 생성이지! 라고 말하면 큰일난다. b=ref는 복사생성이 일어난다! 엥??????? 이유는 ref는 lvalue이기 때문이다. 이건 무슨소리지 싶은데 AClass(10)은 임시 객체이므로 rvalue이고 ref는 임시객체를 참조하는 rvalue 참조자이기 때문에 rvalue아닌가? 원래 임시객체는 사실 없어질 객체이다. 하지만 성능을 극대화 하기 위해 임시객체를 사용하는 방법론을 만든것이 rvalue 참조이다. 즉 임시객체에 너는 이제 내가 사용하겠다고 변수로 못 박는 것이다. "변수로 못 박는다!" 즉 ref는 변수, 그럼 변수는 lvalue인가 rvalue인가? lvalue이다. 즉 ref는 lvalue이다. lvalue가 rvalue로 사용되면 복사 생성을 하기 때문에 복사생성자가 호출된다. 이정도면 충분한 이해가 됐으리라 생각된다. 여기서 코드의 문제점을 찾아야한다. 임시객체를 참조하는 것은 공간, 시간의 효율성이다. 이동 생성자, 이동 대입연사자를 최대한 활용해야 임시객체의 효율성을 맛볼 수 있다. 하지만 복사생성이 되어버리면 의미가 없어지지 않나? 맞다. 의미가 없어진다. 그래서 우리는 rvalue 참조를 한 lvalue의 변수를 이동 생성자로 활성화 시켜야한다. 그게 바로 std::move이다. rvalue 레퍼런스가 lvalue로 인식되어 복사생성을 하니 굳이 공간을 복사하지 않는 이동의미론에 알맞게 xvalue로 인식시켜 값들을 복사하는 것이아닌 이동시켜야한다. 
+
+### univalsal reference
+유니버셜 레퍼런스의 표기는 &&이다. 그럼 rvalue 참조아닌가요? 맞기도 아니기도하다. 유니버셜 레퍼런스는 lvalue or rvalue 레퍼런스가 된다. 즉 lvalue 참조가 될지 rvalue 참조가 될지 결정되지 않는 참조자다. 아니 &&이면 rvalue라면서 rvalue참조가 될지 lvalue참조가 될지 결정되지 않았다니? c++에서 형식이 결정되지 않는 키워드가 무엇인가? 바로 매개변수의 auto, 템플릿의 typename(calss)가 형식이 결정되지 않는다. 이것들은 대입되는 변수값에 의해 형식이 결정된다. 즉 auto &&, typename&& 같은 것들이 univalsal reference이다.
+
+#### 레퍼런스 충돌(reference collapsing)
+레퍼런스 충돌은 레퍼런스 표시자가 세개 이상 있을 경우를 말한다. 이는 컴파일러가 다시 재해석한다. 홀수개는 lvalue reference, 짝수개는 rvalue reference이다. 이는 매우 중요하다.
+* T& -> T&
+* T&& -> T&&
+* T&&& -> T&
+* T&&&& -> T&&
+
+#### 타입 추론방식
+int a= 10, a의 타입은 무엇인가? lvalue 이므로 int &이다. 10의 타입은 무엇인가? rvalue이므로 int&&이다. 개쉽다....
+
+#### template에서 univalsal reference
+그럼 유니버셜 레퍼런스가 어느정도 감이 오지 않나? 타입이 명확하지 않게 인식되는 rvalue reference로 선언된 모든 것들은 lvalue가 들어오느냐, rvalue가 들어오느냐에 따라 개발자가 직접 어떻게 인식시킬지 결정할 수 있다. 자세한 것은 아래에서 확인하자.
+
+```c++
+#include <iostream>
+#include <string>
+using namespace std;
+
+template<typename T> struct S;
+
+template<typename T> struct S<T&> {
+   static void print(T& t)
+   {
+      cout << "print<T&>: " << t << endl;
+   }
+};
+
+template<typename T> struct S<const T&> {
+   static void print(const T& t)
+   {
+      cout << "print<const T&>: " << t << endl;
+   }
+};
+
+template<typename T> struct S<T&&> {
+   static void print(T&& t)
+   {
+      cout << "print<T&&>: " << t << endl;
+   }
+};
+
+template<typename T> struct S<const T&&> {
+   static void print(const T&& t)
+   {
+      cout << "print<const T&&>: " << t << endl;
+   }
+};
+
+template <typename T> void print_type_and_value(T&& t)
+{
+   S<T&&>::print(std::forward<T>(t));
+}
+
+const string fourth() { return string("fourth"); }
+int main()
+{
+   // print_type_and_value<string&>(string& && t)
+   // print_type_and_value<string&>(string& t)
+   string s1("first");
+   print_type_and_value(s1);
+
+   // print_type_and_value<const string&>(const string& && t)
+   // print_type_and_value<const string&>(const string& t)
+   const string s2("second");
+   print_type_and_value(s2);
+
+   // print_type_and_value<string&&>(string&& t)
+   print_type_and_value(string("third"));
+
+   // print_type_and_value<const string&&>(const string&& t)
+   print_type_and_value(fourth());
+}
+```
+
 
 <br></br>
 ## Virtual Table
