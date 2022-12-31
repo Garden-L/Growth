@@ -104,7 +104,7 @@
 <p align="center"><img width="567" alt="image" src="https://user-images.githubusercontent.com/56042451/210128734-e0042a3e-91ea-40a7-92fe-0c163c94a74f.png"></p>
 
 ####  ⃞ 팩토리 패턴와 결합한 구조
-<p align="center"><img width="567" alt="image" src="https://user-images.githubusercontent.com/56042451/210128796-a732825b-1b7c-44f7-8268-c8fa92719711.png"></p>
+<p align="center"><img width="824" alt="image" src="https://user-images.githubusercontent.com/56042451/210128911-26160485-8b89-4725-ab29-edbb74bd175a.png"></p>
 
 * Prototype : 프로토타입 객체로 상속받은 객체에서 복사(Clone)메소드를 구현해야한다.
 * ConcretePrototype : 복사 메소드를 구체적으로 구현하는 클래스.
