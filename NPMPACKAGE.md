@@ -103,3 +103,14 @@ PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\nKh9NV...\n-----END RSA PRIVATE KEY
 const morgan = require('morgan'); //임포트
 dotenv.config(); //구성
 ```
+
+<br></br>
+## winston
+### winston이란?
+다중 전송을 지원하는 로깅 라이브러리 이다. 전송은 필수적으로 스토리지에 저장된다. 다중 전송은 각각 로깅 레벨을 다르게 설정할 수 있어 로깅레벨에 따라 데이터베이스 같은 영구 저장소에 기록하거나 local file, console에 출력할 수 있다.
+
+### 
+
+
+
+
