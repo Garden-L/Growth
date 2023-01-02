@@ -61,6 +61,52 @@
 
 
 <br></br>
+# c++
+## Regex
+### 용어
+#### Target squence
+패턴으로 찾을 문자열을 뜻한다. 가능한 자료형은 null로 끝나는 문자열("abc\0"), std::string 문자열, 두 개의 iterator로 지정된 문자열 범위(str.begin(), str.end())
+
+#### Pattern
+정규 표현식. std::basic_regex 클래스이다. 정규표현식 문법을 지원할 수 있는 옵션이 있다.
+
+#### Matched array
+정규표현식과 매치된 결과를 반환한다. std::result_matche 클래스 이다.
+
+### 알고리즘
+#### std::regex_match
+정규 표현식이 주어진 문자열과 전체 일치할 경우 true를 반환한다. 여기서 전체 일치란 만약 정규표현식이 "c="은 주어진 문자열 "c="과 일치하지만 "c=c="과는 불일치 한다.
+
+#### std::regex_search
+정규 표현식이 주어진 부분 문자열들과 일치할 경우 true를 반환한다. 
+
+
+### match_result
+match_result 클래스는 regex_match, regex_search, regex_iterator에서 결과 값을 반환받는 클래스이다.
+
+#### empty()
+결과 값이 참이면 true, 일치한 결과가 없으면 false를 반환
+
+#### size()
+결과 값이 참이면 size는 서브 표현식에 크기의 +1 만큼 크기가 된다. 서브 표현식에 대한 접근은 배열표기로 접근 가능하다(match\[0). 서브 표현식에 +1만큼 할당한 이유는 0번 인덱스가 현재 결과가 되기 때문이다.
+
+#### ready()
+match_result 객체가 생성되면 항상 true이다
+
+#### prefix()
+서브 매치에 대한 결과값을 반환하는 함수로 접두사라는 뜻 처럼 일치한 곳의 바로 앞부터 Pattern의 첫 주소까지 ssub_match 클래스로 반환한다. 
+
+#### prefix()
+서브 매치에 대한 결과값을 반환하는 함수로 접미사라는 뜻처럼 일치한 곳의 바로 뒤부터 pattern의 끝까지 ssub_match 클래스로 반환한다.
+
+#### match\[index]
+match_result는 배열 접근이 가능한데 인덱스 0번은 현재 일치한 정규표현식에 관한 내용이 저장된다. 
+* first : 일치한 문자열의 시작 주소
+* second : 일치한 문자열의 끝 주소 여기서 끝은 컨테이너의 end()의 위치와 같다.
+* match : 서브 표현식이 일치하면 true, 일치하지 않았으면 false 이다.
+인덱스 n번은 찾으려는 정규표현식의 부분 표현식으로 변환했을 때 각 부분표현식의 순서이다. 만약 일치 한 것이 있다면 각 시작 first, second, match로 접근했을 때 각 일치한 시작주소, 끝주소 true의 값을 가질 것이다. 
+
+
 <br></br>
 # python re package
 
